@@ -92,11 +92,17 @@ class Dynasty:
     def _show_family_tree(self, person, level):
         status = "†" if person.dead else "alive"
         crown = "👑 " if person.was_king else ""
+        gender = "♂ " if person.gender == "male" else "♀ "
         symbol = "├──" if level > 0 else ""
         year_info = f"{person.birth_year}–{person.death_year}" if person.death_year else f"born {person.birth_year}"
-        output = "  " * level + f"{symbol}{crown}{person.name} ({status}, {year_info})"
+        output = "  " * level + f"{symbol}{crown}{gender}{person.name} ({status}, {year_info})"
         if person.partner_list:
-            partner_infos = [f"{p.name} ({'†' if p.dead else 'alive'}, born {p.birth_year})" for p in person.partner_list]
+            partner_infos = []
+            for p in person.partner_list:
+                p_gender = "♂ " if p.gender == "male" else "♀ "
+                p_status = "†" if p.dead else "alive"
+                p_year_info = f"{p.birth_year}–{p.death_year}" if p.death_year else f"born {p.birth_year}"
+                partner_infos.append(f"{p_gender}{p.name} ({p_status}, {p_year_info})")
             output += " ⚭ " + ", ".join(partner_infos)
         print(output)
         shown_children = set()
