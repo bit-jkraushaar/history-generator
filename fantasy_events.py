@@ -30,7 +30,7 @@ class FantasyEventGenerator:
 
     def generate_events(self, year: int) -> List[FantasyEvent]:
         self.world.state['year'] = year
-        self.world.update_season()
+        # Entfernung des update_season() Aufrufs, da Jahreszeiten nicht mehr berücksichtigt werden sollen
         
         events = []
         raw_events = self.world.generate_events()

@@ -5,8 +5,7 @@
         "id": "dragon_migration",
         "name": "Dragon Migration",
         "conditions": {
-          "year": { "gte": 1000 },
-          "season": "autumn"
+          "year": { "gte": 1000 }
         },
         "effects": {
           "regions.Northern Mountains.dragon_activity": 20,
@@ -31,8 +30,7 @@
         "id": "meteor_shower",
         "name": "Meteor Shower",
         "conditions": {
-          "year": { "gte": 1000 },
-          "season": "summer"
+          "year": { "gte": 1000 }
         },
         "effects": {
           "regions.Western Deserts.magical_energy": 25,
@@ -57,8 +55,7 @@
         "id": "seasonal_harvest",
         "name": "Bountiful Harvest",
         "conditions": {
-          "year": { "gte": 1000 },
-          "season": "autumn"
+          "year": { "gte": 1000 }
         },
         "effects": {
           "regions.Central Valley.fertility": 10,
@@ -71,8 +68,7 @@
         "id": "spring_bloom",
         "name": "Spring Bloom",
         "conditions": {
-          "year": { "gte": 1000 },
-          "season": "spring"
+          "year": { "gte": 1000 }
         },
         "effects": {
           "regions.Central Valley.fertility": 15,
@@ -232,4 +228,4 @@
       }
     }
   }
-} 
+}

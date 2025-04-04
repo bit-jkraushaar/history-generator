@@ -1,19 +1,11 @@
 import json
 from typing import Dict, Any, List
-from enum import Enum
 import random
-
-class Season(Enum):
-    SPRING = "spring"
-    SUMMER = "summer"
-    AUTUMN = "autumn"
-    WINTER = "winter"
 
 class FantasyWorld:
     def __init__(self):
         self.state = {
             "year": 1000,
-            "season": Season.SPRING,
             "regions": {
                 "Northern Mountains": {
                     "dragon_activity": 0,
@@ -87,17 +79,6 @@ class FantasyWorld:
         with open('event_definitions.json', 'r') as f:
             return json.load(f)['events']
 
-    def update_season(self):
-        current_season = self.state['season']
-        if current_season == Season.WINTER:
-            self.state['season'] = Season.SPRING
-        else:
-            # Get the next season by getting the next enum value
-            seasons = list(Season)
-            current_index = seasons.index(current_season)
-            next_index = (current_index + 1) % len(seasons)
-            self.state['season'] = seasons[next_index]
-
     def _check_condition(self, condition: Dict[str, Any], value: Any) -> bool:
         for op, threshold in condition.items():
             if op == "gte":
@@ -146,9 +127,6 @@ class FantasyWorld:
         for path, condition in event['conditions'].items():
             if path == 'year':
                 if not self._check_condition(condition, self.state['year']):
-                    return False
-            elif path == 'season':
-                if self.state['season'].value != condition:
                     return False
             else:
                 value = self._get_value(path)
