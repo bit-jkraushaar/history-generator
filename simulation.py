@@ -1,6 +1,7 @@
 from person import Person, male_names, female_names
 from marriage_market import MarriageMarket
 from dynasty import Dynasty
+from fantasy_events import FantasyEventGenerator
 import random
 
 class Simulation:
@@ -9,6 +10,7 @@ class Simulation:
         self.end_year = start_year + duration
         self.dynasties = []
         self.marriage_market = MarriageMarket()
+        self.fantasy_generator = FantasyEventGenerator()
 
     def create_dynasty(self, name: str):
         # random age for king & queen
@@ -29,29 +31,17 @@ class Simulation:
         
         # Collect and process all events
         all_events = []
+        
+        # Get dynasty events
         for dynasty in self.dynasties:
             events = dynasty.simulate_year(self.year, self.marriage_market)
             all_events.extend(events)
         
+        # Get fantasy world events
+        fantasy_events = self.fantasy_generator.generate_events(self.year)
+        all_events.extend(fantasy_events)
+        
         return all_events
-
-    def simulate(self):
-        while self.year < self.end_year:
-            self.marriage_market.update(self.year)
-            
-            # Collect and process all events
-            all_events = []
-            for dynasty in self.dynasties:
-                events = dynasty.simulate_year(self.year, self.marriage_market)
-                all_events.extend(events)
-            
-            # Sort events by type and print them
-            if all_events:
-                print(f"\n🗓 Year {self.year}")
-                for event in sorted(all_events, key=lambda e: (e.year, type(e).__name__)):
-                    print(f"  {event.message}")
-            
-            self.year += 1
 
     def debug_print(self):
         for dynasty in self.dynasties:
