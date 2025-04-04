@@ -19,12 +19,16 @@ def parse_arguments():
     parser.add_argument('--show-political', action='store_true', help='Display political events')
     parser.add_argument('--show-family-tree', action='store_true', help='Display family tree at the end')
     parser.add_argument('--show-all', action='store_true', help='Display all events and family tree')
+    parser.add_argument('--show-fantasy', action='store_true', help='Display only fantasy events (natural, magical, political)')
     
     return parser.parse_args()
 
 def should_show_event(event, args):
     if args.show_all:
         return True
+    
+    if args.show_fantasy:
+        return isinstance(event, (NaturalEvent, MagicalEvent, PoliticalEvent))
     
     if isinstance(event, DeathEvent) and args.show_deaths:
         return True
@@ -68,5 +72,5 @@ def main():
         sim.debug_print()
 
 if __name__ == "__main__":
-    random.seed(42)
+    #random.seed(42)
     main()

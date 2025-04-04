@@ -14,19 +14,33 @@ The simulation can be customized using the following command line parameters:
 - `--show-marriages`: Display marriage events
 - `--show-births`: Display birth events
 - `--show-successions`: Display succession events (monarch changes)
-- `--show-family-tree`: Display the family tree at the end of the simulation
-- `--show-all`: Display all events and the family tree
+- `--show-natural`: Display natural fantasy events
+- `--show-magical`: Display magical fantasy events
+- `--show-political`: Display political fantasy events
+- `--show-fantasy`: Display all fantasy events (natural, magical, political)
+- `--show-family-tree`: Display family tree at the end
+- `--show-all`: Display all events and family tree
 
 ### Examples
 
-Show only deaths and the family tree:
+Show only fantasy events:
 ```bash
-python main.py --show-deaths --show-family-tree
+python main.py --show-fantasy
 ```
 
-Show marriages and births with a longer duration:
+Show fantasy events and family tree:
 ```bash
-python main.py --show-marriages --show-births --duration 100
+python main.py --show-fantasy --show-family-tree
+```
+
+Show specific fantasy event types:
+```bash
+python main.py --show-natural --show-magical
+```
+
+Show dynasty events with a longer duration:
+```bash
+python main.py --show-deaths --show-marriages --duration 100
 ```
 
 Show all events and start in a different year:

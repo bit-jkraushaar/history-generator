@@ -1,0 +1,235 @@
+{
+  "events": {
+    "natural": {
+      "dragon_migration": {
+        "id": "dragon_migration",
+        "name": "Dragon Migration",
+        "conditions": {
+          "year": { "gte": 1000 },
+          "season": "autumn"
+        },
+        "effects": {
+          "regions.Northern Mountains.dragon_activity": 20,
+          "regions.Northern Mountains.trade": -15
+        },
+        "followup_events": ["dragon_attack", "dragon_treaty"]
+      },
+      "magical_storm": {
+        "id": "magical_storm",
+        "name": "Magical Storm",
+        "conditions": {
+          "year": { "gte": 1000 },
+          "regions.Central Valley.magical_energy": { "gte": 20 }
+        },
+        "effects": {
+          "regions.Central Valley.magical_energy": -30,
+          "regions.Central Valley.fertility": 10
+        },
+        "followup_events": ["mana_surge"]
+      },
+      "meteor_shower": {
+        "id": "meteor_shower",
+        "name": "Meteor Shower",
+        "conditions": {
+          "year": { "gte": 1000 },
+          "season": "summer"
+        },
+        "effects": {
+          "regions.Western Deserts.magical_energy": 25,
+          "regions.Western Deserts.trade": 15
+        },
+        "followup_events": ["meteor_mining"]
+      },
+      "earthquake": {
+        "id": "earthquake",
+        "name": "Earthquake",
+        "conditions": {
+          "year": { "gte": 1000 },
+          "regions.Southern Plains.magical_energy": { "gte": 20 }
+        },
+        "effects": {
+          "regions.Southern Plains.fertility": -20,
+          "regions.Southern Plains.magical_energy": 15
+        },
+        "followup_events": ["ancient_ruins_discovered"]
+      },
+      "seasonal_harvest": {
+        "id": "seasonal_harvest",
+        "name": "Bountiful Harvest",
+        "conditions": {
+          "year": { "gte": 1000 },
+          "season": "autumn"
+        },
+        "effects": {
+          "regions.Central Valley.fertility": 10,
+          "regions.Southern Plains.fertility": 10,
+          "factions.Merchant League.trade_income": 15
+        },
+        "followup_events": ["trade_festival"]
+      },
+      "spring_bloom": {
+        "id": "spring_bloom",
+        "name": "Spring Bloom",
+        "conditions": {
+          "year": { "gte": 1000 },
+          "season": "spring"
+        },
+        "effects": {
+          "regions.Central Valley.fertility": 15,
+          "regions.Southern Plains.fertility": 15,
+          "regions.Eastern Forests.magical_energy": 10
+        },
+        "followup_events": ["druid_gathering"]
+      }
+    },
+    "magical": {
+      "mana_surge": {
+        "id": "mana_surge",
+        "name": "Mana Surge",
+        "conditions": {
+          "year": { "gte": 1000 },
+          "regions.Central Valley.magical_energy": { "gte": 20 }
+        },
+        "effects": {
+          "factions.Mages' Guild.power": 15,
+          "factions.Mages' Guild.stability": -10
+        },
+        "followup_events": ["mages_guild_coup"]
+      },
+      "dimensional_rift": {
+        "id": "dimensional_rift",
+        "name": "Dimensional Rift",
+        "conditions": {
+          "year": { "gte": 1000 },
+          "regions.Eastern Forests.magical_energy": { "gte": 30 }
+        },
+        "effects": {
+          "regions.Eastern Forests.magical_energy": -40,
+          "regions.Eastern Forests.creature_diversity": 25
+        },
+        "followup_events": ["creature_invasion"]
+      },
+      "ley_line_shift": {
+        "id": "ley_line_shift",
+        "name": "Ley Line Shift",
+        "conditions": {
+          "year": { "gte": 1000 },
+          "regions.Coastal Regions.magical_energy": { "gte": 20 }
+        },
+        "effects": {
+          "regions.Coastal Regions.magical_energy": 30,
+          "regions.Coastal Regions.trade": -20
+        },
+        "followup_events": ["coastal_ritual"]
+      },
+      "magical_plague": {
+        "id": "magical_plague",
+        "name": "Magical Plague",
+        "conditions": {
+          "year": { "gte": 1000 },
+          "factions.Mages' Guild.stability": { "lte": 70 }
+        },
+        "effects": {
+          "factions.Mages' Guild.power": -20,
+          "factions.Temple of Light.influence": 15
+        },
+        "followup_events": ["temple_healing_campaign"]
+      },
+      "arcane_resonance": {
+        "id": "arcane_resonance",
+        "name": "Arcane Resonance",
+        "conditions": {
+          "year": { "gte": 1000 },
+          "regions.Central Valley.magical_energy": { "gte": 20 }
+        },
+        "effects": {
+          "regions.Central Valley.magical_energy": 15,
+          "regions.Eastern Forests.magical_energy": 15,
+          "factions.Mages' Guild.power": 10
+        },
+        "followup_events": ["mage_conclave"]
+      }
+    },
+    "political": {
+      "mages_guild_coup": {
+        "id": "mages_guild_coup",
+        "name": "The Mages' Guild undergoes a coup",
+        "conditions": {
+          "factions.Mages' Guild.stability": { "lte": 60 },
+          "year": { "gte": 1000 }
+        },
+        "effects": {
+          "factions.Mages' Guild.leader": "New Leader",
+          "factions.Mages' Guild.stability": -20,
+          "factions.Mages' Guild.aggressiveness": 15
+        },
+        "followup_events": ["mages_guild_war_on_heretics"]
+      },
+      "merchant_league_alliance": {
+        "id": "merchant_league_alliance",
+        "name": "The Merchant League forms an alliance",
+        "conditions": {
+          "factions.Merchant League.stability": { "gte": 40 },
+          "year": { "gte": 1000 }
+        },
+        "effects": {
+          "factions.Merchant League.trade_income": 25,
+          "factions.Merchant League.influence": 15
+        },
+        "followup_events": ["trade_expansion"]
+      },
+      "temple_crusade": {
+        "id": "temple_crusade",
+        "name": "The Temple of Light declares a crusade",
+        "conditions": {
+          "factions.Temple of Light.influence": { "gte": 50 },
+          "year": { "gte": 1000 }
+        },
+        "effects": {
+          "factions.Temple of Light.power": 20,
+          "factions.Dark Brotherhood.stability": -15
+        },
+        "followup_events": ["temple_victory"]
+      },
+      "rangers_expedition": {
+        "id": "rangers_expedition",
+        "name": "The Rangers' Order launches an expedition",
+        "conditions": {
+          "factions.Rangers' Order.stability": { "gte": 50 },
+          "year": { "gte": 1000 }
+        },
+        "effects": {
+          "factions.Rangers' Order.influence": 15,
+          "regions.Eastern Forests.creature_diversity": -10
+        },
+        "followup_events": ["new_territory_discovered"]
+      },
+      "noble_council": {
+        "id": "noble_council",
+        "name": "The Noble Houses convene a council",
+        "conditions": {
+          "factions.Noble Houses.stability": { "gte": 40 },
+          "year": { "gte": 1000 }
+        },
+        "effects": {
+          "factions.Noble Houses.influence": 15,
+          "factions.Merchant League.trade_income": 10
+        },
+        "followup_events": ["noble_decree"]
+      },
+      "dark_brotherhood_plot": {
+        "id": "dark_brotherhood_plot",
+        "name": "The Dark Brotherhood initiates a plot",
+        "conditions": {
+          "factions.Dark Brotherhood.stability": { "gte": 30 },
+          "year": { "gte": 1000 }
+        },
+        "effects": {
+          "factions.Dark Brotherhood.power": 15,
+          "factions.Temple of Light.stability": -10
+        },
+        "followup_events": ["temple_investigation"]
+      }
+    }
+  }
+} 
