@@ -1,6 +1,6 @@
 import random
 
-maennliche_namen = [
+male_names = [
     "Baelor", "Draven", "Falathar", "Hadrian", "Jareth", "Lysander", "Nyx", "Oberon",
     "Quintus", "Thorian", "Valerian", "Xander", "Aric", "Caspian", "Finnian", "Haelen",
     "Jorvik", "Kael", "Maelor", "Orion", "Raffael", "Tiberius", "Zaltar", "Aegon",
@@ -8,7 +8,7 @@ maennliche_namen = [
     "Jarik", "Kaelan", "Lorien", "Marius", "Nereus", "Osric", "Phelan", "Ragnar",
     "Silas", "Talon", "Ulric", "Viggo", "Wulfric", "Xylon", "Yorath", "Zephyr"
 ]
-weibliche_namen = [
+female_names = [
     "Aeliana", "Caelia", "Elyndra", "Gwendolyn", "Isolde", "Kyra", "Myranda", "Phiala",
     "Rhiannon", "Seraphina", "Ursula", "Wynter", "Ylva", "Zephyra", "Brynn", "Dahlia",
     "Elowen", "Giselle", "Ilaria", "Lyra", "Niamh", "Primrose", "Saoirse", "Ulani",
@@ -18,70 +18,70 @@ weibliche_namen = [
     "Winifred", "Xanthe", "Yara", "Zelda"
 ]
 
-alle_personen = []
+all_persons = []
 
 class Person:
-    def __init__(self, name, alter, gesundheit, geschlecht, geburtsjahr=0):
+    def __init__(self, name, age, health, gender, birth_year=0):
         self.name = name
-        self.alter = alter
-        self.gesundheit = gesundheit
-        self.geschlecht = geschlecht
+        self.age = age
+        self.health = health
+        self.gender = gender
         self.partner = None
-        self.partnerliste = []
-        self.kinder = []
-        self.tot = False
-        self.war_koenig = False
-        self.heiratsalter = random.randint(18, 30)
-        self.geburtsjahr = geburtsjahr
-        self.sterbejahr = None
-        alle_personen.append(self)
+        self.partner_list = []
+        self.children = []
+        self.dead = False
+        self.was_king = False
+        self.marriage_age = random.randint(18, 30)
+        self.birth_year = birth_year
+        self.death_year = None
+        all_persons.append(self)
 
-    def altern(self, jahr, heiratsmarkt=None):
-        self.alter += 1
-        self.gesundheit -= random.randint(0, 5)
+    def age_up(self, year, marriage_market=None):
+        self.age += 1
+        self.health -= random.randint(0, 5)
 
-        if self.alter >= 18 and not self.partner and heiratsmarkt:
-            chance = min(0.1 + (self.alter - 18) * 0.05, 0.9)
+        if self.age >= 18 and not self.partner and marriage_market:
+            chance = min(0.1 + (self.age - 18) * 0.05, 0.9)
             if random.random() < chance:
-                partner = heiratsmarkt.suche_partner(self)
+                partner = marriage_market.find_partner(self)
                 if partner:
-                    print(f"{self.name} heiratet {partner.name} im Alter von {self.alter} Jahren")
-                    self.heiraten(partner)
-                    heiratsmarkt.entferne(partner)
+                    print(f"{self.name} marries {partner.name} at the age of {self.age} years")
+                    self.marry(partner)
+                    marriage_market.remove(partner)
                 else:
-                    print(f"{self.name} hätte gerne geheiratet, aber es gab keinen passenden Partner auf dem Heiratsmarkt.")
+                    print(f"{self.name} would have liked to marry, but there was no suitable partner on the marriage market.")
 
-    def ist_tot(self, jahr):
-        if self.tot:
+    def is_dead(self, year):
+        if self.dead:
             return True
-        if self.gesundheit <= 0 or self.alter > 80 + random.randint(0, 40):
-            self.tot = True
-            self.sterbejahr = jahr
+        if self.health <= 0 or self.age > 80 + random.randint(0, 40):
+            self.dead = True
+            self.death_year = year
             return True
         return False
 
-    def heiraten(self, partner):
+    def marry(self, partner):
         self.partner = partner
         partner.partner = self
-        self.partnerliste.append(partner)
-        partner.partnerliste.append(self)
+        self.partner_list.append(partner)
+        partner.partner_list.append(self)
 
-    def gebaeren(self, jahr):
-        if self.geschlecht == "weiblich" and self.partner and 16 < self.alter < 45:
+    def give_birth(self, year):
+        if self.gender == "female" and self.partner and 16 < self.age < 45:
             if random.random() < 0.3:
-                geschlecht = "maennlich" if random.random() < 0.5 else "weiblich"
-                name = random.choice(maennliche_namen) if geschlecht == "maennlich" else random.choice(weibliche_namen)
-                kind = Person(name, 0, 100, geschlecht, geburtsjahr=jahr)
-                self.kinder.append(kind)
-                self.partner.kinder.append(kind)
+                gender = "male" if random.random() < 0.5 else "female"
+                name = random.choice(male_names) if gender == "male" else random.choice(female_names)
+                child = Person(name, 0, 100, gender, birth_year=year)
+                self.children.append(child)
+                self.partner.children.append(child)
 
-def generiere_partner(geschlecht, jahr):
-    name = random.choice(maennliche_namen) if geschlecht == "maennlich" else random.choice(weibliche_namen)
+def generate_partner(gender, year):
+    name = random.choice(male_names) if gender == "male" else random.choice(female_names)
     age = random.randint(18, 40)
-    return Person(name, age, 100, geschlecht, geburtsjahr=jahr - age)
+    return Person(name, age, 100, gender, birth_year=year - age)
 
 
-class Heiratskandidat:
-    def __init__(self, person, verbleibende_jahre):
+class MarriageCandidate:
+    def __init__(self, person, remaining_years):
         self.person = person
-        self.verbleibende_jahre = verbleibende_jahre
+        self.remaining_years = remaining_years

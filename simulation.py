@@ -1,36 +1,36 @@
-from person import Person, generiere_partner,maennliche_namen,weibliche_namen
-from heiratsmarkt import Heiratsmarkt
-from dynastie import Dynastie
+from person import Person, male_names, female_names
+from marriage_market import MarriageMarket
+from dynasty import Dynasty
 import random
 
 class Simulation:
-    def __init__(self, startjahr=1000, dauer=50):
-        self.jahr = startjahr
-        self.endjahr = startjahr + dauer
-        self.dynastien = []
-        self.heiratsmarkt = Heiratsmarkt()
+    def __init__(self, start_year=1000, duration=50):
+        self.year = start_year
+        self.end_year = start_year + duration
+        self.dynasties = []
+        self.marriage_market = MarriageMarket()
 
-    def dynastie_erzeugen(self, name: str):
-        # zufälliges Alter für König & Königin
-        alter_koenig = random.randint(20, 40)
-        alter_koenigin = random.randint(20, 40)
-        geburtsjahr = self.jahr - alter_koenig
+    def create_dynasty(self, name: str):
+        # random age for king & queen
+        king_age = random.randint(20, 40)
+        queen_age = random.randint(20, 40)
+        birth_year = self.year - king_age
 
-        koenig = Person(random.choice(maennliche_namen), alter_koenig, 100, "maennlich", geburtsjahr)
-        koenigin = Person(random.choice(weibliche_namen), alter_koenigin, 100, "weiblich", geburtsjahr)
-        koenig.heiraten(koenigin)
+        king = Person(random.choice(male_names), king_age, 100, "male", birth_year)
+        queen = Person(random.choice(female_names), queen_age, 100, "female", birth_year)
+        king.marry(queen)
 
-        dynastie = Dynastie(name, koenig, koenigin)
-        print(f"{koenig.name} ist verheiratet mit {koenig.partner.name if koenig.partner else 'niemandem'}")
-        self.dynastien.append(dynastie)
+        dynasty = Dynasty(name, king, queen)
+        print(f"{king.name} is married to {king.partner.name if king.partner else 'nobody'}")
+        self.dynasties.append(dynasty)
 
-    def simuliere(self):
-        while self.jahr < self.endjahr:
-            print(f"\n🗓 Jahr {self.jahr}")
-            self.heiratsmarkt.aktualisieren(self.jahr)
-            for dynastie in self.dynastien:
-                dynastie.simuliere_jahr(self.jahr, self.heiratsmarkt)
-            self.jahr += 1
+    def simulate(self):
+        while self.year < self.end_year:
+            print(f"\n🗓 Year {self.year}")
+            self.marriage_market.update(self.year)
+            for dynasty in self.dynasties:
+                dynasty.simulate_year(self.year, self.marriage_market)
+            self.year += 1
 
-        for dynastie in self.dynastien:
-            dynastie.zeige_stammbaum()
+        for dynasty in self.dynasties:
+            dynasty.show_family_tree()
