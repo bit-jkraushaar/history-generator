@@ -7,10 +7,8 @@ class Dynasty:
         self.name = name
         self.founding_king = king
         self.founding_queen = queen
-        self.king = king
-        self.queen = queen
-        self.king.was_king = True
-        self.queen.was_king = True
+        self.monarch = king  # Only one monarch
+        self.monarch.was_king = True
         self.family = [king, queen]
 
     def simulate_year(self, year: int, marriage_market: MarriageMarket):
@@ -21,12 +19,8 @@ class Dynasty:
             if isinstance(age_event, DeathEvent):
                 events.append(age_event)
                 self.family.remove(person)
-                if person == self.king:
-                    succession_event = self._replace_monarch(year, is_king=True)
-                    if succession_event:
-                        events.append(succession_event)
-                elif person == self.queen:
-                    succession_event = self._replace_monarch(year, is_king=False)
+                if person == self.monarch:
+                    succession_event = self._replace_monarch(year)
                     if succession_event:
                         events.append(succession_event)
             elif isinstance(age_event, MarriageEvent):
@@ -45,7 +39,7 @@ class Dynasty:
 
         return events
 
-    def _find_successor(self, parent, year, is_king: bool):
+    def _find_successor(self, parent, year):
         # First try to find a suitable child
         suitable_children = [k for k in parent.children if not k.is_dead(year) and k.age >= 18]
         if suitable_children:
@@ -67,32 +61,28 @@ class Dynasty:
         
         return None
 
-    def _replace_monarch(self, year, is_king: bool):
-        parent = self.king if is_king else self.queen
-        successor = self._find_successor(parent, year, is_king)
+    def _replace_monarch(self, year):
+        successor = self._find_successor(self.monarch, year)
         
         if successor:
-            old_monarch = self.king if is_king else self.queen
-            if is_king:
-                self.king = successor
-            else:
-                self.queen = successor
+            old_monarch = self.monarch
+            self.monarch = successor
             successor.was_king = True
-            
-            relationship = "child" if successor in parent.children else "sibling"
+                       
+            relationship = "child" if successor in old_monarch.children else "sibling"
             return SuccessionEvent(
                 year=year,
-                message=f"{successor.name} ({relationship}) succeeds {old_monarch.name} as {'King' if is_king else 'Queen'}",
+                message=f"{successor.name} ({relationship}) succeeds {old_monarch.name} as Monarch",
                 old_monarch=old_monarch.name,
                 new_monarch=successor.name,
-                is_king=is_king
+                is_king=successor.gender == "male"
             )
         else:
             return NoSuccessorEvent(
                 year=year,
-                message=f"The {'Queen' if not is_king else 'King'} has died, but there is no suitable successor.",
-                monarch_name=parent.name,
-                is_king=is_king
+                message=f"The Monarch has died, but there is no suitable successor.",
+                monarch_name=self.monarch.name,
+                is_king=self.monarch.gender == "male"
             )
 
     def show_family_tree(self):
