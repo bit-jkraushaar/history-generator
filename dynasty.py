@@ -1,5 +1,6 @@
 from person import Person
 from marriage_market import MarriageMarket
+from events import SuccessionEvent, NoSuccessorEvent
 
 class Dynasty:
     def __init__(self, name: str, king: Person, queen: Person):
@@ -13,34 +14,65 @@ class Dynasty:
         self.family = [king, queen]
 
     def simulate_year(self, year: int, marriage_market: MarriageMarket):
+        events = []
         for person in self.family[:]:
-            person.age_up(year, marriage_market)
-            if person.is_dead(year):
+            # Age up and check for marriage
+            marriage_event = person.age_up(year, marriage_market)
+            if marriage_event:
+                events.append(marriage_event)
+
+            # Check for death
+            death_event = person.is_dead(year)
+            if death_event:
+                events.append(death_event)
                 self.family.remove(person)
                 if person == self.king:
-                    self._replace_monarch(year, is_king=True)
+                    succession_event = self._replace_monarch(year, is_king=True)
+                    if succession_event:
+                        events.append(succession_event)
                 elif person == self.queen:
-                    self._replace_monarch(year, is_king=False)
+                    succession_event = self._replace_monarch(year, is_king=False)
+                    if succession_event:
+                        events.append(succession_event)
             else:
-                person.give_birth(year)
+                # Check for birth
+                birth_event = person.give_birth(year)
+                if birth_event:
+                    events.append(birth_event)
 
+        # Add new children to family
         for person in self.family:
             for child in person.children:
                 if child not in self.family and not child.is_dead(year):
                     self.family.append(child)
+
+        return events
 
     def _replace_monarch(self, year, is_king: bool):
         parent = self.king if is_king else self.queen
         suitable_children = [k for k in parent.children if not k.is_dead(year) and k.age >= 18]
         if suitable_children:
             successor = max(suitable_children, key=lambda k: k.age)
+            old_monarch = self.king if is_king else self.queen
             if is_king:
                 self.king = successor
             else:
                 self.queen = successor
             successor.was_king = True
+            return SuccessionEvent(
+                year=year,
+                message=f"{successor.name} succeeds {old_monarch.name} as {'King' if is_king else 'Queen'}",
+                old_monarch=old_monarch.name,
+                new_monarch=successor.name,
+                is_king=is_king
+            )
         else:
-            print(f"The {'Queen' if not is_king else 'King'} has died, but there is no suitable successor.")
+            return NoSuccessorEvent(
+                year=year,
+                message=f"The {'Queen' if not is_king else 'King'} has died, but there is no suitable successor.",
+                monarch_name=parent.name,
+                is_king=is_king
+            )
 
     def show_family_tree(self):
         print(f"\nFamily tree of the {self.name} dynasty:")

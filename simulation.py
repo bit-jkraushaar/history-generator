@@ -26,10 +26,20 @@ class Simulation:
 
     def simulate(self):
         while self.year < self.end_year:
-            print(f"\n🗓 Year {self.year}")
             self.marriage_market.update(self.year)
+            
+            # Collect and process all events
+            all_events = []
             for dynasty in self.dynasties:
-                dynasty.simulate_year(self.year, self.marriage_market)
+                events = dynasty.simulate_year(self.year, self.marriage_market)
+                all_events.extend(events)
+            
+            # Sort events by type and print them
+            if all_events:
+                print(f"\n🗓 Year {self.year}")
+                for event in sorted(all_events, key=lambda e: (e.year, type(e).__name__)):
+                    print(f"  {event.message}")
+            
             self.year += 1
 
     def debug_print(self):

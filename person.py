@@ -1,4 +1,5 @@
 import random
+from events import MarriageEvent, BirthEvent, DeathEvent
 
 male_names = [
     "Baelor", "Draven", "Falathar", "Hadrian", "Jareth", "Lysander", "Nyx", "Oberon",
@@ -45,20 +46,32 @@ class Person:
             if random.random() < chance:
                 partner = marriage_market.find_partner(self)
                 if partner:
-                    print(f"{self.name} marries {partner.name} at the age of {self.age} years")
                     self.marry(partner)
                     marriage_market.remove(partner)
+                    return MarriageEvent(
+                        year=year,
+                        message=f"{self.name} marries {partner.name} at the age of {self.age} years",
+                        person1=self.name,
+                        person2=partner.name,
+                        age=self.age
+                    )
                 else:
-                    print(f"{self.name} would have liked to marry, but there was no suitable partner on the marriage market.")
+                    return None
+        return None
 
     def is_dead(self, year):
         if self.dead:
-            return True
+            return None
         if self.health <= 0 or self.age > 80 + random.randint(0, 40):
             self.dead = True
             self.death_year = year
-            return True
-        return False
+            return DeathEvent(
+                year=year,
+                message=f"{self.name} has died at the age of {self.age}",
+                person_name=self.name,
+                age=self.age
+            )
+        return None
 
     def marry(self, partner):
         self.partner = partner
@@ -74,6 +87,14 @@ class Person:
                 child = Person(name, 0, 100, gender, birth_year=year)
                 self.children.append(child)
                 self.partner.children.append(child)
+                return BirthEvent(
+                    year=year,
+                    message=f"{self.name} and {self.partner.name} have a new child: {child.name}",
+                    child_name=child.name,
+                    mother_name=self.name,
+                    father_name=self.partner.name
+                )
+        return None
 
 def generate_partner(gender, year):
     name = random.choice(male_names) if gender == "male" else random.choice(female_names)
