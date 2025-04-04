@@ -1,6 +1,6 @@
 from person import Person
 from marriage_market import MarriageMarket
-from events import SuccessionEvent, NoSuccessorEvent
+from events import SuccessionEvent, NoSuccessorEvent, DeathEvent, MarriageEvent
 
 class Dynasty:
     def __init__(self, name: str, king: Person, queen: Person):
@@ -16,15 +16,10 @@ class Dynasty:
     def simulate_year(self, year: int, marriage_market: MarriageMarket):
         events = []
         for person in self.family[:]:
-            # Age up and check for marriage
-            marriage_event = person.age_up(year, marriage_market)
-            if marriage_event:
-                events.append(marriage_event)
-
-            # Check for death
-            death_event = person.is_dead(year)
-            if death_event:
-                events.append(death_event)
+            # Age up and check for death and marriage
+            age_event = person.age_up(year, marriage_market)
+            if isinstance(age_event, DeathEvent):
+                events.append(age_event)
                 self.family.remove(person)
                 if person == self.king:
                     succession_event = self._replace_monarch(year, is_king=True)
@@ -34,6 +29,8 @@ class Dynasty:
                     succession_event = self._replace_monarch(year, is_king=False)
                     if succession_event:
                         events.append(succession_event)
+            elif isinstance(age_event, MarriageEvent):
+                events.append(age_event)
             else:
                 # Check for birth
                 birth_event = person.give_birth(year)

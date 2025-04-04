@@ -43,6 +43,17 @@ class Person:
         self.age += 1
         self.health -= random.randint(0, 5)
 
+        # Check if person dies
+        if self.health <= 0 or self.age > 80 + random.randint(0, 40):
+            self.dead = True
+            self.death_year = year
+            return DeathEvent(
+                year=year,
+                message=f"{self.name} has died at the age of {self.age}",
+                person_name=self.name,
+                age=self.age
+            )
+
         if self.age >= 18 and not self.partner and marriage_market:
             chance = min(0.1 + (self.age - 18) * 0.05, 0.9)
             if random.random() < chance:
@@ -62,18 +73,7 @@ class Person:
         return None
 
     def is_dead(self, year):
-        if self.dead:
-            return None
-        if self.health <= 0 or self.age > 80 + random.randint(0, 40):
-            self.dead = True
-            self.death_year = year
-            return DeathEvent(
-                year=year,
-                message=f"{self.name} has died at the age of {self.age}",
-                person_name=self.name,
-                age=self.age
-            )
-        return None
+        return self.dead
 
     def marry(self, partner):
         self.partner = partner
