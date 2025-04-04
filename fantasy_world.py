@@ -162,16 +162,22 @@ class FantasyWorld:
         # Check for natural events
         for event_id, event in self.events['natural'].items():
             if self.check_event_conditions(event):
+                # Kategorie zum Ereignis hinzufügen
+                event['category'] = 'natural'
                 possible_events.append(event)
         
         # Check for magical events
         for event_id, event in self.events['magical'].items():
             if self.check_event_conditions(event):
+                # Kategorie zum Ereignis hinzufügen
+                event['category'] = 'magical'
                 possible_events.append(event)
         
         # Check for political events
         for event_id, event in self.events['political'].items():
             if self.check_event_conditions(event):
+                # Kategorie zum Ereignis hinzufügen
+                event['category'] = 'political'
                 possible_events.append(event)
         
         # Randomly select some events based on their type
@@ -183,11 +189,12 @@ class FantasyWorld:
             political_chance = 0.7
             
             for event in possible_events:
-                if event['id'].startswith('natural_') and random.random() < natural_chance:
+                category = event.get('category', '')
+                if category == 'natural' and random.random() < natural_chance:
                     selected_events.append(event)
-                elif event['id'].startswith('magical_') and random.random() < magical_chance:
+                elif category == 'magical' and random.random() < magical_chance:
                     selected_events.append(event)
-                elif event['id'].startswith('political_') and random.random() < political_chance:
+                elif category == 'political' and random.random() < political_chance:
                     selected_events.append(event)
         
         # Apply effects and track followup events
@@ -195,4 +202,4 @@ class FantasyWorld:
             self._apply_effect(event['effects'])
             self.active_events.extend(event['followup_events'])
         
-        return selected_events 
+        return selected_events
