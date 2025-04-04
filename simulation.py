@@ -24,6 +24,17 @@ class Simulation:
         print(f"{king.name} is married to {king.partner.name if king.partner else 'nobody'}")
         self.dynasties.append(dynasty)
 
+    def simulate_year(self):
+        self.marriage_market.update(self.year)
+        
+        # Collect and process all events
+        all_events = []
+        for dynasty in self.dynasties:
+            events = dynasty.simulate_year(self.year, self.marriage_market)
+            all_events.extend(events)
+        
+        return all_events
+
     def simulate(self):
         while self.year < self.end_year:
             self.marriage_market.update(self.year)
