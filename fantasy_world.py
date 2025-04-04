@@ -183,10 +183,10 @@ class FantasyWorld:
         # Randomly select some events based on their type
         selected_events = []
         if possible_events:
-            # Higher chance for natural events
-            natural_chance = 0.8
-            magical_chance = 0.7
-            political_chance = 0.7
+            # Reduzierte Wahrscheinlichkeiten für alle Ereignistypen
+            natural_chance = 0.01
+            magical_chance = 0.005
+            political_chance = 0.01
             
             for event in possible_events:
                 category = event.get('category', '')
