@@ -1,5 +1,6 @@
 import random
 from events import MarriageEvent, BirthEvent, DeathEvent
+from typing import Optional, Tuple
 
 male_names = [
     "Baelor", "Draven", "Falathar", "Hadrian", "Jareth", "Lysander", "Nyx", "Oberon",
@@ -22,7 +23,7 @@ female_names = [
 all_persons = []
 
 class Person:
-    def __init__(self, name, age, health, gender, birth_year=0):
+    def __init__(self, name, age, health, gender, birth_year=0, parents: Optional[Tuple['Person', 'Person']] = None):
         self.name = name
         self.age = age
         self.health = health
@@ -35,6 +36,7 @@ class Person:
         self.marriage_age = random.randint(18, 30)
         self.birth_year = birth_year
         self.death_year = None
+        self.parents = parents
         all_persons.append(self)
 
     def age_up(self, year, marriage_market=None):
@@ -84,7 +86,7 @@ class Person:
             if random.random() < 0.3:
                 gender = "male" if random.random() < 0.5 else "female"
                 name = random.choice(male_names) if gender == "male" else random.choice(female_names)
-                child = Person(name, 0, 100, gender, birth_year=year)
+                child = Person(name, 0, 100, gender, birth_year=year, parents=(self, self.partner))
                 self.children.append(child)
                 self.partner.children.append(child)
                 return BirthEvent(

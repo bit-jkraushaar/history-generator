@@ -48,20 +48,44 @@ class Dynasty:
 
         return events
 
-    def _replace_monarch(self, year, is_king: bool):
-        parent = self.king if is_king else self.queen
+    def _find_successor(self, parent, year, is_king: bool):
+        # First try to find a suitable child
         suitable_children = [k for k in parent.children if not k.is_dead(year) and k.age >= 18]
         if suitable_children:
-            successor = max(suitable_children, key=lambda k: k.age)
+            return max(suitable_children, key=lambda k: k.age)
+
+        # If no suitable child, try to find a sibling
+        # Get all siblings by looking at the children of the parents
+        siblings = []
+        if parent.parents:
+            mother, father = parent.parents
+            # Get all children of the parents that are not the monarch
+            siblings.extend([c for c in mother.children 
+                           if c != parent and not c.is_dead(year) and c.age >= 18])
+            siblings.extend([c for c in father.children 
+                           if c != parent and not c.is_dead(year) and c.age >= 18])
+        
+        if siblings:
+            return max(siblings, key=lambda s: s.age)
+        
+        return None
+
+    def _replace_monarch(self, year, is_king: bool):
+        parent = self.king if is_king else self.queen
+        successor = self._find_successor(parent, year, is_king)
+        
+        if successor:
             old_monarch = self.king if is_king else self.queen
             if is_king:
                 self.king = successor
             else:
                 self.queen = successor
             successor.was_king = True
+            
+            relationship = "child" if successor in parent.children else "sibling"
             return SuccessionEvent(
                 year=year,
-                message=f"{successor.name} succeeds {old_monarch.name} as {'King' if is_king else 'Queen'}",
+                message=f"{successor.name} ({relationship}) succeeds {old_monarch.name} as {'King' if is_king else 'Queen'}",
                 old_monarch=old_monarch.name,
                 new_monarch=successor.name,
                 is_king=is_king
