@@ -32,5 +32,6 @@ class Simulation:
                 dynasty.simulate_year(self.year, self.marriage_market)
             self.year += 1
 
+    def debug_print(self):
         for dynasty in self.dynasties:
             dynasty.show_family_tree()
