@@ -12,13 +12,13 @@ class FantasyWorld:
                     "trade": 50,
                     "magical_energy": 30,
                     "fertility": 40,
-                    "creature_diversity": 35  # Neues Attribut
+                    "creature_diversity": 35  # New attribute
                 },
                 "Southern Plains": {
                     "fertility": 70,
                     "trade": 60,
                     "magical_energy": 20,
-                    "creature_diversity": 30  # Neues Attribut
+                    "creature_diversity": 30  # New attribute
                 },
                 "Eastern Forests": {
                     "magical_energy": 60,
@@ -30,19 +30,19 @@ class FantasyWorld:
                     "magical_energy": 40,
                     "trade": 40,
                     "fertility": 20,
-                    "creature_diversity": 25  # Neues Attribut
+                    "creature_diversity": 25  # New attribute
                 },
                 "Central Valley": {
                     "magical_energy": 50,
                     "fertility": 80,
                     "trade": 70,
-                    "creature_diversity": 45  # Neues Attribut
+                    "creature_diversity": 45  # New attribute
                 },
                 "Coastal Regions": {
                     "trade": 80,
                     "magical_energy": 30,
                     "fertility": 60,
-                    "creature_diversity": 50  # Neues Attribut
+                    "creature_diversity": 50  # New attribute
                 }
             },
             "factions": {
@@ -132,19 +132,19 @@ class FantasyWorld:
                 self._set_value(path, value)
 
     def _add_followup_events(self, followup_events: List[str]):
-        # Priorität für Folgeereignisse (sinkt mit jedem Jahr)
+        # Priority for follow-up events (decreases each year)
         initial_priority = 3
         for event_id in followup_events:
             self.active_events[event_id] = initial_priority
 
     def update_active_events(self):
-        # Reduziere die Priorität aller aktiven Ereignisse um 1
+        # Reduce the priority of all active events by 1
         events_to_remove = []
         for event_id, priority in self.active_events.items():
             if priority > 1:
                 self.active_events[event_id] = priority - 1
             else:
-                # Entferne Ereignisse mit Priorität 0
+                # Remove events with priority 0
                 events_to_remove.append(event_id)
         
         for event_id in events_to_remove:
@@ -164,13 +164,13 @@ class FantasyWorld:
     def generate_events(self) -> List[Dict[str, Any]]:
         possible_events = []
         
-        # Dictionary zum Speichern der Event-IDs für später
+        # Dictionary to store event IDs for later
         event_id_map = {}
         
         # Check for natural events
         for event_id, event in self.events['natural'].items():
             if self.check_event_conditions(event):
-                # Kategorie und ID zum Ereignis hinzufügen
+                # Add category and ID to the event
                 event['category'] = 'natural'
                 event['id'] = event_id
                 event_id_map[event_id] = event
@@ -179,7 +179,7 @@ class FantasyWorld:
         # Check for magical events
         for event_id, event in self.events['magical'].items():
             if self.check_event_conditions(event):
-                # Kategorie und ID zum Ereignis hinzufügen
+                # Add category and ID to the event
                 event['category'] = 'magical'
                 event['id'] = event_id
                 event_id_map[event_id] = event
@@ -188,7 +188,7 @@ class FantasyWorld:
         # Check for political events
         for event_id, event in self.events['political'].items():
             if self.check_event_conditions(event):
-                # Kategorie und ID zum Ereignis hinzufügen
+                # Add category and ID to the event
                 event['category'] = 'political'
                 event['id'] = event_id
                 event_id_map[event_id] = event
@@ -197,19 +197,19 @@ class FantasyWorld:
         # Randomly select some events based on their type
         selected_events = []
         if possible_events:
-            # Reduzierte Wahrscheinlichkeiten für alle Ereignistypen
-            natural_chance = 0.005  # Reduziert von 0.01 auf 0.005 (0.5%)
-            magical_chance = 0.002  # Reduziert von 0.005 auf 0.002 (0.2%)
-            political_chance = 0.004  # Reduziert von 0.01 auf 0.004 (0.4%)
+            # Reduced probabilities for all event types
+            natural_chance = 0.005  # Reduced from 0.01 to 0.005 (0.5%)
+            magical_chance = 0.002  # Reduced from 0.005 to 0.002 (0.2%)
+            political_chance = 0.004  # Reduced from 0.01 to 0.004 (0.4%)
             
-            # Erhöhter Bonus für aktive Ereignisse
+            # Increased bonus for active events
             active_event_bonus_multiplier = 5.0
             
             for event in possible_events:
                 event_id = event.get('id', '')
                 category = event.get('category', '')
                 
-                # Standardwahrscheinlichkeit basierend auf Kategorie
+                # Base probability based on category
                 base_chance = 0
                 if category == 'natural':
                     base_chance = natural_chance
@@ -218,24 +218,24 @@ class FantasyWorld:
                 elif category == 'political':
                     base_chance = political_chance
                 
-                # Erhöhe die Wahrscheinlichkeit für aktive Ereignisse
+                # Increase probability for active events
                 final_chance = base_chance
                 if event_id in self.active_events:
-                    # Wahrscheinlichkeit wird erhöht basierend auf der Priorität des Ereignisses
+                    # Probability is increased based on the priority of the event
                     priority = self.active_events[event_id]
                     final_chance = base_chance * (active_event_bonus_multiplier * priority)
                 
-                # Prüfe, ob das Ereignis eintritt
+                # Check if the event occurs
                 if random.random() < final_chance:
                     selected_events.append(event)
         
         # Apply effects and track followup events
         for event in selected_events:
             self._apply_effect(event['effects'])
-            # Neue Methode zum Hinzufügen von Folgeereignissen verwenden
+            # Use new method to add follow-up events
             self._add_followup_events(event['followup_events'])
         
-        # Aktualisiere die Prioritäten aktiver Ereignisse für das nächste Jahr
+        # Update priorities of active events for the next year
         self.update_active_events()
         
         return selected_events
