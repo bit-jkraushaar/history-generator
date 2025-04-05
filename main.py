@@ -19,12 +19,16 @@ def parse_arguments():
     parser.add_argument('--show-political', action='store_true', help='Display political events')
     parser.add_argument('--show-family-tree', action='store_true', help='Display family tree at the end')
     parser.add_argument('--show-all', action='store_true', help='Display all events and family tree')
+    parser.add_argument('--show-fantasy', action='store_true', help='Display only fantasy events (natural, magical, political)')
     
     return parser.parse_args()
 
 def should_show_event(event, args):
     if args.show_all:
         return True
+    
+    if args.show_fantasy:
+        return isinstance(event, (NaturalEvent, MagicalEvent, PoliticalEvent))
     
     if isinstance(event, DeathEvent) and args.show_deaths:
         return True
@@ -56,11 +60,24 @@ def main():
     while sim.year < sim.end_year:
         events = sim.simulate_year()
         visible_events = [event for event in events if should_show_event(event, args)]
+        
         if visible_events:
             print(f"\n🗓 Year {sim.year}")
             for event in visible_events:
-                print(f"  {event.message}")
-        sim.year += 1
+                if isinstance(event, (NaturalEvent, MagicalEvent, PoliticalEvent)):
+                    print(f"  - {event}")
+                    if event.effects:
+                        print("    Effects:")
+                        for effect in event.effects:
+                            if effect['type'] == 'modify_stat':
+                                if 'faction' in effect:
+                                    print(f"      {effect['faction']}: {effect['stat']} {effect['value']:+d}")
+                                elif 'region' in effect:
+                                    print(f"      {effect['region']}: {effect['stat']} {effect['value']:+d}")
+                else:
+                    print(f"  {event.message}")
+        
+        sim.increment_year()
     
     # Show family tree if requested
     if args.show_family_tree or args.show_all:
@@ -68,5 +85,5 @@ def main():
         sim.debug_print()
 
 if __name__ == "__main__":
-    random.seed(42)
+    #random.seed(42)
     main()

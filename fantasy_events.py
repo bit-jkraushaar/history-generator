@@ -1,83 +1,72 @@
-import random
 from events import Event
+from fantasy_world import FantasyWorld
 from typing import List
 
 class FantasyEvent(Event):
-    pass
+    def __init__(self, year: int, event_data: dict):
+        self.event_data = event_data
+        self.category = event_data.get('category', 'unknown')
+        self.name = event_data.get('name', 'Unbekanntes Event')
+        self.severity = event_data.get('severity', 'moderate')
+        self.region = event_data.get('region', 'unknown')
+        self.impact = event_data.get('impact', 'unknown')
+        self.faction = event_data.get('faction', 'unknown')
+        self.effects = event_data.get('effects', [])  # Store effects directly
+        super().__init__(year, self.name)
+
+    def __str__(self):
+        details = []
+        if self.severity != 'moderate':
+            details.append(f"Schweregrad: {self.severity}")
+        if self.region != 'unknown':
+            details.append(f"Region: {self.region}")
+        if self.impact != 'unknown':
+            details.append(f"Auswirkung: {self.impact}")
+        if self.faction != 'unknown':
+            details.append(f"Fraktion: {self.faction}")
+        
+        base = f"{self.name} ({self.category})"
+        if details:
+            return f"{base}\n    Details: {', '.join(details)}"
+        return base
 
 class NaturalEvent(FantasyEvent):
-    def __init__(self, year: int, event_type: str, severity: str, region: str):
-        self.event_type = event_type
-        self.severity = severity
-        self.region = region
-        message = f"A {severity} {event_type} affects {region}"
-        super().__init__(year, message)
+    def __init__(self, year: int, event_data: dict):
+        super().__init__(year, event_data)
 
 class MagicalEvent(FantasyEvent):
-    def __init__(self, year: int, event_type: str, impact: str):
-        self.event_type = event_type
-        self.impact = impact
-        message = f"A {event_type} occurs: {impact}"
-        super().__init__(year, message)
+    def __init__(self, year: int, event_data: dict):
+        super().__init__(year, event_data)
 
 class PoliticalEvent(FantasyEvent):
-    def __init__(self, year: int, event_type: str, faction: str, outcome: str):
-        self.event_type = event_type
-        self.faction = faction
-        self.outcome = outcome
-        message = f"{faction} {event_type}: {outcome}"
-        super().__init__(year, message)
+    def __init__(self, year: int, event_data: dict):
+        super().__init__(year, event_data)
 
 class FantasyEventGenerator:
-    def __init__(self):
-        self.regions = [
-            "the Northern Mountains", "the Southern Plains", "the Eastern Forests",
-            "the Western Deserts", "the Central Valley", "the Coastal Regions"
-        ]
-        self.factions = [
-            "The Mages' Guild", "The Merchant League", "The Noble Houses",
-            "The Temple of Light", "The Dark Brotherhood", "The Rangers' Order"
-        ]
-        self.natural_events = [
-            ("dragon migration", "mild", "causes temporary disruption"),
-            ("magical storm", "severe", "lasts for weeks"),
-            ("earthquake", "catastrophic", "reshapes the landscape"),
-            ("meteor shower", "moderate", "brings rare materials"),
-            ("volcanic eruption", "devastating", "creates new magical hotspots")
-        ]
-        self.magical_events = [
-            ("mana surge", "enhances magical abilities temporarily"),
-            ("dimensional rift", "allows travel to other realms"),
-            ("magical plague", "affects spellcasters"),
-            ("ley line shift", "alters magical geography"),
-            ("ancient artifact awakening", "changes local power dynamics")
-        ]
-        self.political_events = [
-            ("declares war", "shifts regional power"),
-            ("forms an alliance", "strengthens diplomatic ties"),
-            ("undergoes a coup", "changes leadership"),
-            ("discovers ancient knowledge", "gains strategic advantage"),
-            ("suffers internal conflict", "weakens their position")
-        ]
+    def __init__(self, fantasy_world: FantasyWorld = None):
+        self.world = fantasy_world if fantasy_world else FantasyWorld()
 
     def generate_events(self, year: int) -> List[FantasyEvent]:
+        # Set the year directly
+        self.world.year = year
+        raw_events = self.world.generate_events()
+        
         events = []
+        for event_data in raw_events:
+            category = event_data.get('category', '')
+            if category == 'natural':
+                events.append(NaturalEvent(year, event_data))
+            elif category == 'magical':
+                events.append(MagicalEvent(year, event_data))
+            elif category == 'political':
+                events.append(PoliticalEvent(year, event_data))
+            
+            # Apply effects
+            for effect in event_data.get('effects', []):
+                if effect['type'] == 'modify_stat':
+                    if 'faction' in effect:
+                        self.world.factions[effect['faction']][effect['stat']] += effect['value']
+                    elif 'region' in effect:
+                        self.world.regions[effect['region']][effect['stat']] += effect['value']
         
-        # 30% chance for a natural event
-        if random.random() < 0.3:
-            event_type, severity, impact = random.choice(self.natural_events)
-            region = random.choice(self.regions)
-            events.append(NaturalEvent(year, event_type, severity, region))
-        
-        # 20% chance for a magical event
-        if random.random() < 0.2:
-            event_type, impact = random.choice(self.magical_events)
-            events.append(MagicalEvent(year, event_type, impact))
-        
-        # 25% chance for a political event
-        if random.random() < 0.25:
-            event_type, outcome = random.choice(self.political_events)
-            faction = random.choice(self.factions)
-            events.append(PoliticalEvent(year, event_type, faction, outcome))
-        
-        return events 
+        return events

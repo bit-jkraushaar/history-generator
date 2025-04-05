@@ -1,7 +1,7 @@
 from person import Person, male_names, female_names
 from marriage_market import MarriageMarket
 from dynasty import Dynasty
-from fantasy_events import FantasyEventGenerator
+from fantasy_events import FantasyEventGenerator, FantasyWorld
 import random
 
 class Simulation:
@@ -10,7 +10,8 @@ class Simulation:
         self.end_year = start_year + duration
         self.dynasties = []
         self.marriage_market = MarriageMarket()
-        self.fantasy_generator = FantasyEventGenerator()
+        self.fantasy_world = FantasyWorld()
+        self.fantasy_generator = FantasyEventGenerator(self.fantasy_world)
 
     def create_dynasty(self, name: str):
         # random age for king & queen
@@ -42,6 +43,9 @@ class Simulation:
         all_events.extend(fantasy_events)
         
         return all_events
+
+    def increment_year(self):
+        self.year += 1
 
     def debug_print(self):
         for dynasty in self.dynasties:
