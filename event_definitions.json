@@ -4,218 +4,648 @@
       "dragon_migration": {
         "id": "dragon_migration",
         "name": "Dragon Migration",
-        "conditions": {
-          "year": { "gte": 1000 }
-        },
-        "effects": {
-          "regions.Northern Mountains.dragon_activity": 20,
-          "regions.Northern Mountains.trade": -15
-        },
-        "followup_events": ["dragon_attack", "dragon_treaty"]
+        "conditions": [
+          {
+            "type": "year",
+            "operator": ">=",
+            "value": 1000
+          },
+          {
+            "type": "season",
+            "operator": "==",
+            "value": "autumn"
+          }
+        ],
+        "effects": [
+          {
+            "type": "modify_stat",
+            "region": "Northern Mountains",
+            "stat": "dragon_activity",
+            "value": 20
+          },
+          {
+            "type": "modify_stat",
+            "region": "Northern Mountains",
+            "stat": "trade",
+            "value": -15
+          }
+        ],
+        "followup_events": [
+          {
+            "id": "dragon_attack",
+            "delay": 1,
+            "probability": 0.3
+          },
+          {
+            "id": "dragon_treaty",
+            "delay": 2,
+            "probability": 0.2
+          }
+        ]
       },
       "magical_storm": {
         "id": "magical_storm",
         "name": "Magical Storm",
-        "conditions": {
-          "year": { "gte": 1000 },
-          "regions.Central Valley.magical_energy": { "gte": 20 }
-        },
-        "effects": {
-          "regions.Central Valley.magical_energy": -30,
-          "regions.Central Valley.fertility": 10
-        },
-        "followup_events": ["mana_surge"]
+        "conditions": [
+          {
+            "type": "year",
+            "operator": ">=",
+            "value": 1000
+          },
+          {
+            "type": "region",
+            "region": "Central Valley",
+            "stat": "magical_energy",
+            "operator": ">=",
+            "value": 20
+          }
+        ],
+        "effects": [
+          {
+            "type": "modify_stat",
+            "region": "Central Valley",
+            "stat": "magical_energy",
+            "value": -30
+          },
+          {
+            "type": "modify_stat",
+            "region": "Central Valley",
+            "stat": "fertility",
+            "value": 10
+          }
+        ],
+        "followup_events": [
+          {
+            "id": "mana_surge",
+            "delay": 1,
+            "probability": 0.4
+          }
+        ]
       },
       "meteor_shower": {
         "id": "meteor_shower",
         "name": "Meteor Shower",
-        "conditions": {
-          "year": { "gte": 1000 }
-        },
-        "effects": {
-          "regions.Western Deserts.magical_energy": 25,
-          "regions.Western Deserts.trade": 15
-        },
-        "followup_events": ["meteor_mining"]
+        "conditions": [
+          {
+            "type": "year",
+            "operator": ">=",
+            "value": 1000
+          }
+        ],
+        "effects": [
+          {
+            "type": "modify_stat",
+            "region": "Western Deserts",
+            "stat": "magical_energy",
+            "value": 25
+          },
+          {
+            "type": "modify_stat",
+            "region": "Western Deserts",
+            "stat": "trade",
+            "value": 15
+          }
+        ],
+        "followup_events": [
+          {
+            "id": "meteor_mining",
+            "delay": 1,
+            "probability": 0.5
+          }
+        ]
       },
       "earthquake": {
         "id": "earthquake",
         "name": "Earthquake",
-        "conditions": {
-          "year": { "gte": 1000 },
-          "regions.Southern Plains.magical_energy": { "gte": 20 }
-        },
-        "effects": {
-          "regions.Southern Plains.fertility": -20,
-          "regions.Southern Plains.magical_energy": 15
-        },
-        "followup_events": ["ancient_ruins_discovered"]
+        "conditions": [
+          {
+            "type": "year",
+            "operator": ">=",
+            "value": 1000
+          },
+          {
+            "type": "region",
+            "region": "Southern Plains",
+            "stat": "magical_energy",
+            "operator": ">=",
+            "value": 20
+          }
+        ],
+        "effects": [
+          {
+            "type": "modify_stat",
+            "region": "Southern Plains",
+            "stat": "fertility",
+            "value": -20
+          },
+          {
+            "type": "modify_stat",
+            "region": "Southern Plains",
+            "stat": "magical_energy",
+            "value": 15
+          }
+        ],
+        "followup_events": [
+          {
+            "id": "ancient_ruins_discovered",
+            "delay": 1,
+            "probability": 0.3
+          }
+        ]
       },
       "seasonal_harvest": {
         "id": "seasonal_harvest",
         "name": "Bountiful Harvest",
-        "conditions": {
-          "year": { "gte": 1000 }
-        },
-        "effects": {
-          "regions.Central Valley.fertility": 10,
-          "regions.Southern Plains.fertility": 10,
-          "factions.Merchant League.trade_income": 15
-        },
-        "followup_events": ["trade_festival"]
+        "conditions": [
+          {
+            "type": "year",
+            "operator": ">=",
+            "value": 1000
+          },
+          {
+            "type": "season",
+            "operator": "==",
+            "value": "autumn"
+          }
+        ],
+        "effects": [
+          {
+            "type": "modify_stat",
+            "region": "Central Valley",
+            "stat": "fertility",
+            "value": 10
+          },
+          {
+            "type": "modify_stat",
+            "region": "Southern Plains",
+            "stat": "fertility",
+            "value": 10
+          },
+          {
+            "type": "modify_stat",
+            "faction": "Merchant League",
+            "stat": "trade_income",
+            "value": 15
+          }
+        ],
+        "followup_events": [
+          {
+            "id": "trade_festival",
+            "delay": 1,
+            "probability": 0.4
+          }
+        ]
       },
       "spring_bloom": {
         "id": "spring_bloom",
         "name": "Spring Bloom",
-        "conditions": {
-          "year": { "gte": 1000 }
-        },
-        "effects": {
-          "regions.Central Valley.fertility": 15,
-          "regions.Southern Plains.fertility": 15,
-          "regions.Eastern Forests.magical_energy": 10
-        },
-        "followup_events": ["druid_gathering"]
+        "conditions": [
+          {
+            "type": "year",
+            "operator": ">=",
+            "value": 1000
+          },
+          {
+            "type": "season",
+            "operator": "==",
+            "value": "spring"
+          }
+        ],
+        "effects": [
+          {
+            "type": "modify_stat",
+            "region": "Central Valley",
+            "stat": "fertility",
+            "value": 15
+          },
+          {
+            "type": "modify_stat",
+            "region": "Southern Plains",
+            "stat": "fertility",
+            "value": 15
+          },
+          {
+            "type": "modify_stat",
+            "region": "Eastern Forests",
+            "stat": "magical_energy",
+            "value": 10
+          }
+        ],
+        "followup_events": [
+          {
+            "id": "druid_gathering",
+            "delay": 1,
+            "probability": 0.3
+          }
+        ]
       },
       "dragon_attack": {
         "id": "dragon_attack",
         "name": "Dragon Attack",
-        "conditions": {
-          "year": { "gte": 1000 },
-          "regions.Northern Mountains.dragon_activity": { "gte": 15 }
-        },
-        "effects": {
-          "regions.Northern Mountains.trade": -25,
-          "regions.Northern Mountains.dragon_activity": 15,
-          "factions.Rangers' Order.power": -10
-        },
-        "followup_events": ["dragon_hunters"]
+        "conditions": [
+          {
+            "type": "year",
+            "operator": ">=",
+            "value": 1000
+          },
+          {
+            "type": "region",
+            "region": "Northern Mountains",
+            "stat": "dragon_activity",
+            "operator": ">=",
+            "value": 15
+          }
+        ],
+        "effects": [
+          {
+            "type": "modify_stat",
+            "region": "Northern Mountains",
+            "stat": "trade",
+            "value": -10
+          },
+          {
+            "type": "modify_stat",
+            "faction": "Mages' Guild",
+            "stat": "power",
+            "value": 5
+          }
+        ],
+        "followup_events": []
       },
       "dragon_treaty": {
         "id": "dragon_treaty",
         "name": "Dragon Treaty",
-        "conditions": {
-          "year": { "gte": 1000 },
-          "regions.Northern Mountains.dragon_activity": { "gte": 10 },
-          "factions.Mages' Guild.power": { "gte": 40 }
-        },
-        "effects": {
-          "regions.Northern Mountains.trade": 20,
-          "factions.Mages' Guild.influence": 20,
-          "regions.Northern Mountains.magical_energy": 25
-        },
+        "conditions": [
+          {
+            "type": "year",
+            "operator": ">=",
+            "value": 1000
+          },
+          {
+            "type": "region",
+            "region": "Northern Mountains",
+            "stat": "dragon_activity",
+            "operator": ">=",
+            "value": 10
+          },
+          {
+            "type": "faction",
+            "faction": "Mages' Guild",
+            "stat": "power",
+            "operator": ">=",
+            "value": 40
+          }
+        ],
+        "effects": [
+          {
+            "type": "modify_stat",
+            "region": "Northern Mountains",
+            "stat": "trade",
+            "value": 20
+          },
+          {
+            "type": "modify_stat",
+            "faction": "Mages' Guild",
+            "stat": "influence",
+            "value": 20
+          },
+          {
+            "type": "modify_stat",
+            "region": "Northern Mountains",
+            "stat": "magical_energy",
+            "value": 25
+          }
+        ],
         "followup_events": []
       },
       "meteor_mining": {
         "id": "meteor_mining",
         "name": "Meteor Mining",
-        "conditions": {
-          "year": { "gte": 1000 },
-          "regions.Western Deserts.magical_energy": { "gte": 20 }
-        },
-        "effects": {
-          "regions.Western Deserts.trade": 30,
-          "factions.Merchant League.trade_income": 25,
-          "factions.Mages' Guild.power": 15
-        },
-        "followup_events": ["magical_weaponry"]
+        "conditions": [
+          {
+            "type": "year",
+            "operator": ">=",
+            "value": 1000
+          },
+          {
+            "type": "region",
+            "region": "Western Deserts",
+            "stat": "magical_energy",
+            "operator": ">=",
+            "value": 20
+          }
+        ],
+        "effects": [
+          {
+            "type": "modify_stat",
+            "region": "Western Deserts",
+            "stat": "trade",
+            "value": 30
+          },
+          {
+            "type": "modify_stat",
+            "faction": "Merchant League",
+            "stat": "trade_income",
+            "value": 25
+          },
+          {
+            "type": "modify_stat",
+            "faction": "Mages' Guild",
+            "stat": "power",
+            "value": 15
+          }
+        ],
+        "followup_events": [
+          {
+            "id": "magical_weaponry",
+            "delay": 1,
+            "probability": 0.3
+          }
+        ]
       },
       "ancient_ruins_discovered": {
         "id": "ancient_ruins_discovered",
         "name": "Ancient Ruins Discovered",
-        "conditions": {
-          "year": { "gte": 1000 },
-          "regions.Southern Plains.magical_energy": { "gte": 15 }
-        },
-        "effects": {
-          "regions.Southern Plains.magical_energy": 20,
-          "factions.Mages' Guild.influence": 15,
-          "regions.Southern Plains.trade": 15
-        },
-        "followup_events": ["ancient_curse"]
+        "conditions": [
+          {
+            "type": "year",
+            "operator": ">=",
+            "value": 1000
+          },
+          {
+            "type": "region",
+            "region": "Southern Plains",
+            "stat": "magical_energy",
+            "operator": ">=",
+            "value": 15
+          }
+        ],
+        "effects": [
+          {
+            "type": "modify_stat",
+            "region": "Southern Plains",
+            "stat": "magical_energy",
+            "value": 20
+          },
+          {
+            "type": "modify_stat",
+            "faction": "Mages' Guild",
+            "stat": "influence",
+            "value": 15
+          },
+          {
+            "type": "modify_stat",
+            "region": "Southern Plains",
+            "stat": "trade",
+            "value": 15
+          }
+        ],
+        "followup_events": [
+          {
+            "id": "ancient_curse",
+            "delay": 1,
+            "probability": 0.3
+          }
+        ]
       },
       "trade_festival": {
         "id": "trade_festival",
         "name": "Trade Festival",
-        "conditions": {
-          "year": { "gte": 1000 },
-          "factions.Merchant League.trade_income": { "gte": 30 }
-        },
-        "effects": {
-          "factions.Merchant League.trade_income": 15,
-          "factions.Merchant League.influence": 10,
-          "regions.Central Valley.trade": 15
-        },
+        "conditions": [
+          {
+            "type": "year",
+            "operator": ">=",
+            "value": 1000
+          },
+          {
+            "type": "faction",
+            "faction": "Merchant League",
+            "stat": "trade_income",
+            "operator": ">=",
+            "value": 30
+          }
+        ],
+        "effects": [
+          {
+            "type": "modify_stat",
+            "faction": "Merchant League",
+            "stat": "trade_income",
+            "value": 15
+          },
+          {
+            "type": "modify_stat",
+            "faction": "Merchant League",
+            "stat": "influence",
+            "value": 10
+          },
+          {
+            "type": "modify_stat",
+            "region": "Central Valley",
+            "stat": "trade",
+            "value": 15
+          }
+        ],
         "followup_events": []
       },
       "druid_gathering": {
         "id": "druid_gathering",
         "name": "Druid Gathering",
-        "conditions": {
-          "year": { "gte": 1000 },
-          "regions.Eastern Forests.magical_energy": { "gte": 30 }
-        },
-        "effects": {
-          "regions.Eastern Forests.magical_energy": 25,
-          "regions.Eastern Forests.creature_diversity": 15,
-          "regions.Eastern Forests.fertility": 20
-        },
-        "followup_events": ["nature_blessing"]
+        "conditions": [
+          {
+            "type": "year",
+            "operator": ">=",
+            "value": 1000
+          },
+          {
+            "type": "region",
+            "region": "Eastern Forests",
+            "stat": "magical_energy",
+            "operator": ">=",
+            "value": 30
+          }
+        ],
+        "effects": [
+          {
+            "type": "modify_stat",
+            "region": "Eastern Forests",
+            "stat": "magical_energy",
+            "value": 25
+          },
+          {
+            "type": "modify_stat",
+            "region": "Eastern Forests",
+            "stat": "creature_diversity",
+            "value": 15
+          },
+          {
+            "type": "modify_stat",
+            "region": "Eastern Forests",
+            "stat": "fertility",
+            "value": 20
+          }
+        ],
+        "followup_events": [
+          {
+            "id": "nature_blessing",
+            "delay": 1,
+            "probability": 0.3
+          }
+        ]
       },
       "dragon_hunters": {
         "id": "dragon_hunters",
         "name": "Dragon Hunters",
-        "conditions": {
-          "year": { "gte": 1000 },
-          "regions.Northern Mountains.dragon_activity": { "gte": 20 }
-        },
-        "effects": {
-          "regions.Northern Mountains.dragon_activity": -15,
-          "factions.Rangers' Order.power": 20,
-          "factions.Rangers' Order.influence": 15
-        },
+        "conditions": [
+          {
+            "type": "year",
+            "operator": ">=",
+            "value": 1000
+          },
+          {
+            "type": "region",
+            "region": "Northern Mountains",
+            "stat": "dragon_activity",
+            "operator": ">=",
+            "value": 20
+          }
+        ],
+        "effects": [
+          {
+            "type": "modify_stat",
+            "region": "Northern Mountains",
+            "stat": "dragon_activity",
+            "value": -15
+          },
+          {
+            "type": "modify_stat",
+            "faction": "Rangers' Order",
+            "stat": "power",
+            "value": 20
+          },
+          {
+            "type": "modify_stat",
+            "faction": "Rangers' Order",
+            "stat": "influence",
+            "value": 15
+          }
+        ],
         "followup_events": []
       },
       "magical_weaponry": {
         "id": "magical_weaponry",
         "name": "Magical Weaponry",
-        "conditions": {
-          "year": { "gte": 1000 },
-          "factions.Mages' Guild.power": { "gte": 40 }
-        },
-        "effects": {
-          "factions.Mages' Guild.power": 15,
-          "factions.Noble Houses.power": 15,
-          "factions.Dark Brotherhood.power": 10
-        },
+        "conditions": [
+          {
+            "type": "year",
+            "operator": ">=",
+            "value": 1000
+          },
+          {
+            "type": "faction",
+            "faction": "Mages' Guild",
+            "stat": "power",
+            "operator": ">=",
+            "value": 40
+          }
+        ],
+        "effects": [
+          {
+            "type": "modify_stat",
+            "faction": "Mages' Guild",
+            "stat": "power",
+            "value": 15
+          },
+          {
+            "type": "modify_stat",
+            "faction": "Noble Houses",
+            "stat": "power",
+            "value": 15
+          },
+          {
+            "type": "modify_stat",
+            "faction": "Dark Brotherhood",
+            "stat": "power",
+            "value": 10
+          }
+        ],
         "followup_events": []
       },
       "ancient_curse": {
         "id": "ancient_curse",
         "name": "Ancient Curse",
-        "conditions": {
-          "year": { "gte": 1000 },
-          "regions.Southern Plains.magical_energy": { "gte": 30 }
-        },
-        "effects": {
-          "regions.Southern Plains.fertility": -20,
-          "regions.Southern Plains.magical_energy": 15,
-          "factions.Temple of Light.influence": 15
-        },
+        "conditions": [
+          {
+            "type": "year",
+            "operator": ">=",
+            "value": 1000
+          },
+          {
+            "type": "region",
+            "region": "Southern Plains",
+            "stat": "magical_energy",
+            "operator": ">=",
+            "value": 30
+          }
+        ],
+        "effects": [
+          {
+            "type": "modify_stat",
+            "region": "Southern Plains",
+            "stat": "fertility",
+            "value": -20
+          },
+          {
+            "type": "modify_stat",
+            "region": "Southern Plains",
+            "stat": "magical_energy",
+            "value": 15
+          },
+          {
+            "type": "modify_stat",
+            "faction": "Temple of Light",
+            "stat": "influence",
+            "value": 15
+          }
+        ],
         "followup_events": []
       },
       "nature_blessing": {
         "id": "nature_blessing",
         "name": "Nature's Blessing",
-        "conditions": {
-          "year": { "gte": 1000 },
-          "regions.Eastern Forests.magical_energy": { "gte": 40 }
-        },
-        "effects": {
-          "regions.Eastern Forests.fertility": 25,
-          "regions.Central Valley.fertility": 15,
-          "regions.Southern Plains.fertility": 15
-        },
+        "conditions": [
+          {
+            "type": "year",
+            "operator": ">=",
+            "value": 1000
+          },
+          {
+            "type": "region",
+            "region": "Eastern Forests",
+            "stat": "magical_energy",
+            "operator": ">=",
+            "value": 40
+          }
+        ],
+        "effects": [
+          {
+            "type": "modify_stat",
+            "region": "Eastern Forests",
+            "stat": "fertility",
+            "value": 25
+          },
+          {
+            "type": "modify_stat",
+            "region": "Central Valley",
+            "stat": "fertility",
+            "value": 15
+          },
+          {
+            "type": "modify_stat",
+            "region": "Southern Plains",
+            "stat": "fertility",
+            "value": 15
+          }
+        ],
         "followup_events": []
       }
     },
@@ -223,427 +653,1281 @@
       "mana_surge": {
         "id": "mana_surge",
         "name": "Mana Surge",
-        "conditions": {
-          "year": { "gte": 1000 },
-          "regions.Central Valley.magical_energy": { "gte": 20 }
-        },
-        "effects": {
-          "factions.Mages' Guild.power": 15,
-          "factions.Mages' Guild.stability": -10
-        },
-        "followup_events": ["mages_guild_coup"]
+        "conditions": [
+          {
+            "type": "year",
+            "operator": ">=",
+            "value": 1000
+          },
+          {
+            "type": "region",
+            "region": "Central Valley",
+            "stat": "magical_energy",
+            "operator": ">=",
+            "value": 20
+          }
+        ],
+        "effects": [
+          {
+            "type": "modify_stat",
+            "faction": "Mages' Guild",
+            "stat": "power",
+            "value": 15
+          },
+          {
+            "type": "modify_stat",
+            "faction": "Mages' Guild",
+            "stat": "stability",
+            "value": -10
+          }
+        ],
+        "followup_events": [
+          {
+            "id": "mages_guild_coup",
+            "delay": 1,
+            "probability": 0.3
+          }
+        ]
       },
       "dimensional_rift": {
         "id": "dimensional_rift",
         "name": "Dimensional Rift",
-        "conditions": {
-          "year": { "gte": 1000 },
-          "regions.Eastern Forests.magical_energy": { "gte": 30 }
-        },
-        "effects": {
-          "regions.Eastern Forests.magical_energy": -40,
-          "regions.Eastern Forests.creature_diversity": 25
-        },
-        "followup_events": ["creature_invasion"]
+        "conditions": [
+          {
+            "type": "year",
+            "operator": ">=",
+            "value": 1000
+          },
+          {
+            "type": "region",
+            "region": "Eastern Forests",
+            "stat": "magical_energy",
+            "operator": ">=",
+            "value": 30
+          }
+        ],
+        "effects": [
+          {
+            "type": "modify_stat",
+            "region": "Eastern Forests",
+            "stat": "magical_energy",
+            "value": -40
+          },
+          {
+            "type": "modify_stat",
+            "region": "Eastern Forests",
+            "stat": "creature_diversity",
+            "value": 25
+          }
+        ],
+        "followup_events": [
+          {
+            "id": "creature_invasion",
+            "delay": 1,
+            "probability": 0.4
+          }
+        ]
       },
       "ley_line_shift": {
         "id": "ley_line_shift",
         "name": "Ley Line Shift",
-        "conditions": {
-          "year": { "gte": 1000 },
-          "regions.Coastal Regions.magical_energy": { "gte": 20 }
-        },
-        "effects": {
-          "regions.Coastal Regions.magical_energy": 30,
-          "regions.Coastal Regions.trade": -20
-        },
-        "followup_events": ["coastal_ritual"]
+        "conditions": [
+          {
+            "type": "year",
+            "operator": ">=",
+            "value": 1000
+          },
+          {
+            "type": "region",
+            "region": "Central Valley",
+            "stat": "magical_energy",
+            "operator": ">=",
+            "value": 30
+          }
+        ],
+        "effects": [
+          {
+            "type": "modify_stat",
+            "region": "Central Valley",
+            "stat": "magical_energy",
+            "value": 5
+          },
+          {
+            "type": "modify_stat",
+            "faction": "Mages' Guild",
+            "stat": "power",
+            "value": 3
+          }
+        ],
+        "followup_events": [
+          {
+            "id": "magical_instability",
+            "delay": 1,
+            "probability": 0.3
+          }
+        ]
       },
       "magical_plague": {
         "id": "magical_plague",
         "name": "Magical Plague",
-        "conditions": {
-          "year": { "gte": 1000 },
-          "factions.Mages' Guild.stability": { "lte": 70 }
-        },
-        "effects": {
-          "factions.Mages' Guild.power": -20,
-          "factions.Temple of Light.influence": 15
-        },
-        "followup_events": ["temple_healing_campaign"]
+        "conditions": [
+          {
+            "type": "year",
+            "operator": ">=",
+            "value": 1000
+          },
+          {
+            "type": "faction",
+            "faction": "Mages' Guild",
+            "stat": "stability",
+            "operator": "<=",
+            "value": 70
+          }
+        ],
+        "effects": [
+          {
+            "type": "modify_stat",
+            "faction": "Mages' Guild",
+            "stat": "power",
+            "value": -20
+          },
+          {
+            "type": "modify_stat",
+            "faction": "Temple of Light",
+            "stat": "influence",
+            "value": 15
+          }
+        ],
+        "followup_events": [
+          {
+            "id": "temple_healing_campaign",
+            "delay": 1,
+            "probability": 0.4
+          }
+        ]
       },
       "arcane_resonance": {
         "id": "arcane_resonance",
         "name": "Arcane Resonance",
-        "conditions": {
-          "year": { "gte": 1000 },
-          "regions.Central Valley.magical_energy": { "gte": 20 }
-        },
-        "effects": {
-          "regions.Central Valley.magical_energy": 15,
-          "regions.Eastern Forests.magical_energy": 15,
-          "factions.Mages' Guild.power": 10
-        },
-        "followup_events": ["mage_conclave"]
+        "conditions": [
+          {
+            "type": "year",
+            "operator": ">=",
+            "value": 1000
+          },
+          {
+            "type": "region",
+            "region": "Central Valley",
+            "stat": "magical_energy",
+            "operator": ">=",
+            "value": 20
+          }
+        ],
+        "effects": [
+          {
+            "type": "modify_stat",
+            "region": "Central Valley",
+            "stat": "magical_energy",
+            "value": 15
+          },
+          {
+            "type": "modify_stat",
+            "region": "Eastern Forests",
+            "stat": "magical_energy",
+            "value": 15
+          },
+          {
+            "type": "modify_stat",
+            "faction": "Mages' Guild",
+            "stat": "power",
+            "value": 10
+          }
+        ],
+        "followup_events": [
+          {
+            "id": "mage_conclave",
+            "delay": 1,
+            "probability": 0.3
+          }
+        ]
       },
       "creature_invasion": {
         "id": "creature_invasion",
         "name": "Creature Invasion",
-        "conditions": {
-          "year": { "gte": 1000 },
-          "regions.Eastern Forests.creature_diversity": { "gte": 20 }
-        },
-        "effects": {
-          "regions.Eastern Forests.trade": -25,
-          "factions.Rangers' Order.power": 15,
-          "regions.Eastern Forests.creature_diversity": 15
-        },
-        "followup_events": ["rangers_campaign"]
+        "conditions": [
+          {
+            "type": "year",
+            "operator": ">=",
+            "value": 1000
+          },
+          {
+            "type": "region",
+            "region": "Eastern Forests",
+            "stat": "creature_diversity",
+            "operator": ">=",
+            "value": 20
+          }
+        ],
+        "effects": [
+          {
+            "type": "modify_stat",
+            "region": "Eastern Forests",
+            "stat": "trade",
+            "value": -25
+          },
+          {
+            "type": "modify_stat",
+            "faction": "Rangers' Order",
+            "stat": "power",
+            "value": 15
+          },
+          {
+            "type": "modify_stat",
+            "region": "Eastern Forests",
+            "stat": "creature_diversity",
+            "value": 15
+          }
+        ],
+        "followup_events": [
+          {
+            "id": "rangers_campaign",
+            "delay": 1,
+            "probability": 0.4
+          }
+        ]
       },
       "coastal_ritual": {
         "id": "coastal_ritual",
         "name": "Coastal Ritual",
-        "conditions": {
-          "year": { "gte": 1000 },
-          "regions.Coastal Regions.magical_energy": { "gte": 25 }
-        },
-        "effects": {
-          "regions.Coastal Regions.magical_energy": 20,
-          "factions.Mages' Guild.power": 10,
-          "regions.Coastal Regions.trade": 15
-        },
-        "followup_events": ["magical_sea_creatures"]
+        "conditions": [
+          {
+            "type": "year",
+            "operator": ">=",
+            "value": 1000
+          },
+          {
+            "type": "region",
+            "region": "Coastal Regions",
+            "stat": "magical_energy",
+            "operator": ">=",
+            "value": 25
+          }
+        ],
+        "effects": [
+          {
+            "type": "modify_stat",
+            "region": "Coastal Regions",
+            "stat": "magical_energy",
+            "value": 20
+          },
+          {
+            "type": "modify_stat",
+            "faction": "Mages' Guild",
+            "stat": "power",
+            "value": 10
+          },
+          {
+            "type": "modify_stat",
+            "region": "Coastal Regions",
+            "stat": "trade",
+            "value": 15
+          }
+        ],
+        "followup_events": [
+          {
+            "id": "magical_sea_creatures",
+            "delay": 1,
+            "probability": 0.3
+          }
+        ]
       },
       "temple_healing_campaign": {
         "id": "temple_healing_campaign",
         "name": "Temple Healing Campaign",
-        "conditions": {
-          "year": { "gte": 1000 },
-          "factions.Temple of Light.influence": { "gte": 40 }
-        },
-        "effects": {
-          "factions.Temple of Light.influence": 20,
-          "factions.Temple of Light.power": 15,
-          "factions.Mages' Guild.stability": 15
-        },
-        "followup_events": ["temple_recruitment"]
+        "conditions": [
+          {
+            "type": "year",
+            "operator": ">=",
+            "value": 1000
+          },
+          {
+            "type": "faction",
+            "faction": "Temple of Light",
+            "stat": "influence",
+            "operator": ">=",
+            "value": 40
+          }
+        ],
+        "effects": [
+          {
+            "type": "modify_stat",
+            "faction": "Temple of Light",
+            "stat": "influence",
+            "value": 20
+          },
+          {
+            "type": "modify_stat",
+            "faction": "Temple of Light",
+            "stat": "power",
+            "value": 15
+          },
+          {
+            "type": "modify_stat",
+            "faction": "Mages' Guild",
+            "stat": "stability",
+            "value": 15
+          }
+        ],
+        "followup_events": [
+          {
+            "id": "temple_recruitment",
+            "delay": 1,
+            "probability": 0.3
+          }
+        ]
       },
       "mage_conclave": {
         "id": "mage_conclave",
         "name": "Mage Conclave",
-        "conditions": {
-          "year": { "gte": 1000 },
-          "factions.Mages' Guild.power": { "gte": 40 }
-        },
-        "effects": {
-          "factions.Mages' Guild.stability": 15,
-          "factions.Mages' Guild.influence": 20,
-          "regions.Central Valley.magical_energy": 20
-        },
-        "followup_events": ["magical_discovery"]
+        "conditions": [
+          {
+            "type": "year",
+            "operator": ">=",
+            "value": 1000
+          },
+          {
+            "type": "faction",
+            "faction": "Mages' Guild",
+            "stat": "power",
+            "operator": ">=",
+            "value": 40
+          }
+        ],
+        "effects": [
+          {
+            "type": "modify_stat",
+            "faction": "Mages' Guild",
+            "stat": "stability",
+            "value": 15
+          },
+          {
+            "type": "modify_stat",
+            "faction": "Mages' Guild",
+            "stat": "influence",
+            "value": 20
+          },
+          {
+            "type": "modify_stat",
+            "region": "Central Valley",
+            "stat": "magical_energy",
+            "value": 20
+          }
+        ],
+        "followup_events": [
+          {
+            "id": "magical_discovery",
+            "delay": 1,
+            "probability": 0.3
+          }
+        ]
       },
       "magical_discovery": {
         "id": "magical_discovery",
         "name": "Magical Discovery",
-        "conditions": {
-          "year": { "gte": 1000 },
-          "factions.Mages' Guild.power": { "gte": 40 }
-        },
-        "effects": {
-          "factions.Mages' Guild.influence": 15,
-          "regions.Central Valley.magical_energy": 15,
-          "factions.Merchant League.trade_income": 10
-        },
+        "conditions": [
+          {
+            "type": "year",
+            "operator": ">=",
+            "value": 1000
+          },
+          {
+            "type": "faction",
+            "faction": "Mages' Guild",
+            "stat": "power",
+            "operator": ">=",
+            "value": 40
+          }
+        ],
+        "effects": [
+          {
+            "type": "modify_stat",
+            "faction": "Mages' Guild",
+            "stat": "influence",
+            "value": 15
+          },
+          {
+            "type": "modify_stat",
+            "region": "Central Valley",
+            "stat": "magical_energy",
+            "value": 15
+          },
+          {
+            "type": "modify_stat",
+            "faction": "Merchant League",
+            "stat": "trade_income",
+            "value": 10
+          }
+        ],
         "followup_events": []
       },
       "magical_sea_creatures": {
         "id": "magical_sea_creatures",
         "name": "Magical Sea Creatures",
-        "conditions": {
-          "year": { "gte": 1000 },
-          "regions.Coastal Regions.magical_energy": { "gte": 30 }
-        },
-        "effects": {
-          "regions.Coastal Regions.creature_diversity": 25,
-          "regions.Coastal Regions.trade": -15
-        },
+        "conditions": [
+          {
+            "type": "year",
+            "operator": ">=",
+            "value": 1000
+          },
+          {
+            "type": "region",
+            "region": "Coastal Regions",
+            "stat": "magical_energy",
+            "operator": ">=",
+            "value": 30
+          }
+        ],
+        "effects": [
+          {
+            "type": "modify_stat",
+            "region": "Coastal Regions",
+            "stat": "creature_diversity",
+            "value": 25
+          },
+          {
+            "type": "modify_stat",
+            "region": "Coastal Regions",
+            "stat": "trade",
+            "value": -15
+          }
+        ],
         "followup_events": []
       },
       "rangers_campaign": {
         "id": "rangers_campaign",
         "name": "Rangers Campaign",
-        "conditions": {
-          "year": { "gte": 1000 },
-          "factions.Rangers' Order.power": { "gte": 40 }
-        },
-        "effects": {
-          "factions.Rangers' Order.power": 10,
-          "regions.Eastern Forests.creature_diversity": -20,
-          "factions.Rangers' Order.influence": 15
-        },
+        "conditions": [
+          {
+            "type": "year",
+            "operator": ">=",
+            "value": 1000
+          },
+          {
+            "type": "faction",
+            "faction": "Rangers' Order",
+            "stat": "power",
+            "operator": ">=",
+            "value": 40
+          }
+        ],
+        "effects": [
+          {
+            "type": "modify_stat",
+            "faction": "Rangers' Order",
+            "stat": "power",
+            "value": 10
+          },
+          {
+            "type": "modify_stat",
+            "region": "Eastern Forests",
+            "stat": "creature_diversity",
+            "value": -20
+          },
+          {
+            "type": "modify_stat",
+            "faction": "Rangers' Order",
+            "stat": "influence",
+            "value": 15
+          }
+        ],
         "followup_events": []
       },
       "temple_recruitment": {
         "id": "temple_recruitment",
         "name": "Temple Recruitment",
-        "conditions": {
-          "year": { "gte": 1000 },
-          "factions.Temple of Light.influence": { "gte": 50 }
-        },
-        "effects": {
-          "factions.Temple of Light.power": 15,
-          "factions.Dark Brotherhood.stability": -10,
-          "factions.Temple of Light.stability": 10
-        },
+        "conditions": [
+          {
+            "type": "year",
+            "operator": ">=",
+            "value": 1000
+          },
+          {
+            "type": "faction",
+            "faction": "Temple of Light",
+            "stat": "influence",
+            "operator": ">=",
+            "value": 50
+          }
+        ],
+        "effects": [
+          {
+            "type": "modify_stat",
+            "faction": "Temple of Light",
+            "stat": "power",
+            "value": 15
+          },
+          {
+            "type": "modify_stat",
+            "faction": "Dark Brotherhood",
+            "stat": "stability",
+            "value": -10
+          },
+          {
+            "type": "modify_stat",
+            "faction": "Temple of Light",
+            "stat": "stability",
+            "value": 10
+          }
+        ],
+        "followup_events": []
+      },
+      "magical_instability": {
+        "id": "magical_instability",
+        "name": "Magical Instability",
+        "conditions": [
+          {
+            "type": "region",
+            "region": "Central Valley",
+            "stat": "magical_energy",
+            "operator": ">=",
+            "value": 40
+          }
+        ],
+        "effects": [
+          {
+            "type": "modify_stat",
+            "region": "Central Valley",
+            "stat": "magical_energy",
+            "value": -10
+          },
+          {
+            "type": "modify_stat",
+            "faction": "Mages' Guild",
+            "stat": "stability",
+            "value": -15
+          }
+        ],
         "followup_events": []
       }
     },
     "political": {
       "mages_guild_coup": {
         "id": "mages_guild_coup",
-        "name": "The Mages' Guild undergoes a coup",
-        "conditions": {
-          "factions.Mages' Guild.stability": { "lte": 60 },
-          "year": { "gte": 1000 }
-        },
-        "effects": {
-          "factions.Mages' Guild.leader": "New Leader",
-          "factions.Mages' Guild.stability": -20,
-          "factions.Mages' Guild.aggressiveness": 15
-        },
-        "followup_events": ["mages_guild_war_on_heretics"]
+        "name": "Mages' Guild Coup",
+        "conditions": [
+          {
+            "type": "faction",
+            "faction": "Noble Houses",
+            "stat": "stability",
+            "operator": "<=",
+            "value": 30
+          },
+          {
+            "type": "faction",
+            "faction": "Mages' Guild",
+            "stat": "power",
+            "operator": ">=",
+            "value": 60
+          }
+        ],
+        "effects": [
+          {
+            "type": "modify_stat",
+            "faction": "Mages' Guild",
+            "stat": "stability",
+            "value": -10
+          },
+          {
+            "type": "modify_stat",
+            "faction": "Noble Houses",
+            "stat": "power",
+            "value": -5
+          }
+        ],
+        "followup_events": []
       },
       "merchant_league_alliance": {
         "id": "merchant_league_alliance",
-        "name": "The Merchant League forms an alliance",
-        "conditions": {
-          "factions.Merchant League.stability": { "gte": 40 },
-          "year": { "gte": 1000 }
-        },
-        "effects": {
-          "factions.Merchant League.trade_income": 25,
-          "factions.Merchant League.influence": 15
-        },
-        "followup_events": ["trade_expansion"]
+        "name": "Merchant League Alliance",
+        "conditions": [
+          {
+            "type": "faction",
+            "faction": "Merchant League",
+            "stat": "trade_income",
+            "operator": ">=",
+            "value": 40
+          }
+        ],
+        "effects": [
+          {
+            "type": "modify_stat",
+            "faction": "Merchant League",
+            "stat": "influence",
+            "value": 25
+          },
+          {
+            "type": "modify_stat",
+            "faction": "Noble Houses",
+            "stat": "stability",
+            "value": 15
+          }
+        ],
+        "followup_events": []
       },
       "temple_crusade": {
         "id": "temple_crusade",
-        "name": "The Temple of Light declares a crusade",
-        "conditions": {
-          "factions.Temple of Light.influence": { "gte": 50 },
-          "year": { "gte": 1000 }
-        },
-        "effects": {
-          "factions.Temple of Light.power": 20,
-          "factions.Dark Brotherhood.stability": -15
-        },
-        "followup_events": ["temple_victory"]
+        "name": "Temple Crusade",
+        "conditions": [
+          {
+            "type": "faction",
+            "faction": "Temple of Light",
+            "stat": "influence",
+            "operator": ">=",
+            "value": 50
+          },
+          {
+            "type": "year",
+            "operator": ">=",
+            "value": 1000
+          }
+        ],
+        "effects": [
+          {
+            "type": "modify_stat",
+            "faction": "Temple of Light",
+            "stat": "power",
+            "value": 20
+          },
+          {
+            "type": "modify_stat",
+            "faction": "Dark Brotherhood",
+            "stat": "stability",
+            "value": -15
+          }
+        ],
+        "followup_events": [
+          {
+            "id": "temple_victory",
+            "delay": 1,
+            "probability": 0.4
+          }
+        ]
       },
       "rangers_expedition": {
         "id": "rangers_expedition",
-        "name": "The Rangers' Order launches an expedition",
-        "conditions": {
-          "factions.Rangers' Order.stability": { "gte": 50 },
-          "year": { "gte": 1000 }
-        },
-        "effects": {
-          "factions.Rangers' Order.influence": 15,
-          "regions.Eastern Forests.creature_diversity": -10
-        },
-        "followup_events": ["new_territory_discovered"]
+        "name": "Rangers Expedition",
+        "conditions": [
+          {
+            "type": "faction",
+            "faction": "Rangers' Order",
+            "stat": "stability",
+            "operator": ">=",
+            "value": 50
+          },
+          {
+            "type": "year",
+            "operator": ">=",
+            "value": 1000
+          }
+        ],
+        "effects": [
+          {
+            "type": "modify_stat",
+            "faction": "Rangers' Order",
+            "stat": "influence",
+            "value": 15
+          },
+          {
+            "type": "modify_stat",
+            "region": "Eastern Forests",
+            "stat": "creature_diversity",
+            "value": -10
+          }
+        ],
+        "followup_events": [
+          {
+            "id": "new_territory_discovered",
+            "delay": 1,
+            "probability": 0.3
+          }
+        ]
       },
       "noble_council": {
         "id": "noble_council",
-        "name": "The Noble Houses convene a council",
-        "conditions": {
-          "factions.Noble Houses.stability": { "gte": 40 },
-          "year": { "gte": 1000 }
-        },
-        "effects": {
-          "factions.Noble Houses.influence": 15,
-          "factions.Merchant League.trade_income": 10
-        },
-        "followup_events": ["noble_decree"]
+        "name": "Noble Council",
+        "conditions": [
+          {
+            "type": "faction",
+            "faction": "Noble Houses",
+            "stat": "stability",
+            "operator": ">=",
+            "value": 40
+          },
+          {
+            "type": "year",
+            "operator": ">=",
+            "value": 1000
+          }
+        ],
+        "effects": [
+          {
+            "type": "modify_stat",
+            "faction": "Noble Houses",
+            "stat": "influence",
+            "value": 15
+          },
+          {
+            "type": "modify_stat",
+            "faction": "Merchant League",
+            "stat": "trade_income",
+            "value": 10
+          }
+        ],
+        "followup_events": [
+          {
+            "id": "noble_decree",
+            "delay": 1,
+            "probability": 0.3
+          }
+        ]
       },
       "dark_brotherhood_plot": {
         "id": "dark_brotherhood_plot",
-        "name": "The Dark Brotherhood initiates a plot",
-        "conditions": {
-          "factions.Dark Brotherhood.stability": { "gte": 30 },
-          "year": { "gte": 1000 }
-        },
-        "effects": {
-          "factions.Dark Brotherhood.power": 15,
-          "factions.Temple of Light.stability": -10
-        },
-        "followup_events": ["temple_investigation"]
+        "name": "Dark Brotherhood Plot",
+        "conditions": [
+          {
+            "type": "faction",
+            "faction": "Noble Houses",
+            "stat": "stability",
+            "operator": "<=",
+            "value": 30
+          },
+          {
+            "type": "faction",
+            "faction": "Dark Brotherhood",
+            "stat": "power",
+            "operator": ">=",
+            "value": 30
+          }
+        ],
+        "effects": [
+          {
+            "type": "modify_stat",
+            "faction": "Noble Houses",
+            "stat": "stability",
+            "value": -25
+          },
+          {
+            "type": "modify_stat",
+            "faction": "Dark Brotherhood",
+            "stat": "influence",
+            "value": 20
+          }
+        ],
+        "followup_events": []
       },
       "mages_guild_war_on_heretics": {
         "id": "mages_guild_war_on_heretics",
         "name": "Mages Guild War on Heretics",
-        "conditions": {
-          "year": { "gte": 1000 },
-          "factions.Mages' Guild.aggressiveness": { "gte": 25 }
-        },
-        "effects": {
-          "factions.Mages' Guild.power": 15,
-          "factions.Mages' Guild.stability": -15,
-          "factions.Dark Brotherhood.stability": -20
-        },
-        "followup_events": ["dark_retaliation"]
+        "conditions": [
+          {
+            "type": "year",
+            "operator": ">=",
+            "value": 1000
+          },
+          {
+            "type": "faction",
+            "faction": "Mages' Guild",
+            "stat": "aggressiveness",
+            "operator": ">=",
+            "value": 25
+          }
+        ],
+        "effects": [
+          {
+            "type": "modify_stat",
+            "faction": "Mages' Guild",
+            "stat": "power",
+            "value": 15
+          },
+          {
+            "type": "modify_stat",
+            "faction": "Mages' Guild",
+            "stat": "stability",
+            "value": -15
+          },
+          {
+            "type": "modify_stat",
+            "faction": "Dark Brotherhood",
+            "stat": "stability",
+            "value": -20
+          }
+        ],
+        "followup_events": [
+          {
+            "id": "dark_retaliation",
+            "delay": 1,
+            "probability": 0.4
+          }
+        ]
       },
       "trade_expansion": {
         "id": "trade_expansion",
         "name": "Trade Expansion",
-        "conditions": {
-          "year": { "gte": 1000 },
-          "factions.Merchant League.trade_income": { "gte": 40 }
-        },
-        "effects": {
-          "factions.Merchant League.trade_income": 20,
-          "regions.Coastal Regions.trade": 15,
-          "regions.Southern Plains.trade": 15
-        },
-        "followup_events": ["merchant_rivalry"]
+        "conditions": [
+          {
+            "type": "year",
+            "operator": ">=",
+            "value": 1000
+          },
+          {
+            "type": "faction",
+            "faction": "Merchant League",
+            "stat": "trade_income",
+            "operator": ">=",
+            "value": 40
+          }
+        ],
+        "effects": [
+          {
+            "type": "modify_stat",
+            "faction": "Merchant League",
+            "stat": "trade_income",
+            "value": 20
+          },
+          {
+            "type": "modify_stat",
+            "region": "Coastal Regions",
+            "stat": "trade",
+            "value": 15
+          },
+          {
+            "type": "modify_stat",
+            "region": "Southern Plains",
+            "stat": "trade",
+            "value": 15
+          }
+        ],
+        "followup_events": [
+          {
+            "id": "merchant_rivalry",
+            "delay": 1,
+            "probability": 0.3
+          }
+        ]
       },
       "temple_victory": {
         "id": "temple_victory",
         "name": "Temple Victory",
-        "conditions": {
-          "year": { "gte": 1000 },
-          "factions.Temple of Light.power": { "gte": 40 }
-        },
-        "effects": {
-          "factions.Temple of Light.influence": 25,
-          "factions.Temple of Light.power": 15,
-          "factions.Dark Brotherhood.stability": -25
-        },
-        "followup_events": ["temple_golden_age"]
+        "conditions": [
+          {
+            "type": "year",
+            "operator": ">=",
+            "value": 1000
+          },
+          {
+            "type": "faction",
+            "faction": "Temple of Light",
+            "stat": "power",
+            "operator": ">=",
+            "value": 40
+          }
+        ],
+        "effects": [
+          {
+            "type": "modify_stat",
+            "faction": "Temple of Light",
+            "stat": "influence",
+            "value": 25
+          },
+          {
+            "type": "modify_stat",
+            "faction": "Temple of Light",
+            "stat": "power",
+            "value": 15
+          },
+          {
+            "type": "modify_stat",
+            "faction": "Dark Brotherhood",
+            "stat": "stability",
+            "value": -25
+          }
+        ],
+        "followup_events": [
+          {
+            "id": "temple_golden_age",
+            "delay": 1,
+            "probability": 0.3
+          }
+        ]
       },
       "new_territory_discovered": {
         "id": "new_territory_discovered",
         "name": "New Territory Discovered",
-        "conditions": {
-          "year": { "gte": 1000 },
-          "factions.Rangers' Order.influence": { "gte": 40 }
-        },
-        "effects": {
-          "factions.Rangers' Order.influence": 20,
-          "factions.Noble Houses.influence": 15,
-          "factions.Merchant League.trade_income": 15
-        },
-        "followup_events": ["colonization"]
+        "conditions": [
+          {
+            "type": "year",
+            "operator": ">=",
+            "value": 1000
+          },
+          {
+            "type": "faction",
+            "faction": "Rangers' Order",
+            "stat": "influence",
+            "operator": ">=",
+            "value": 40
+          }
+        ],
+        "effects": [
+          {
+            "type": "modify_stat",
+            "faction": "Rangers' Order",
+            "stat": "influence",
+            "value": 20
+          },
+          {
+            "type": "modify_stat",
+            "faction": "Noble Houses",
+            "stat": "influence",
+            "value": 15
+          },
+          {
+            "type": "modify_stat",
+            "faction": "Merchant League",
+            "stat": "trade_income",
+            "value": 15
+          }
+        ],
+        "followup_events": [
+          {
+            "id": "colonization",
+            "delay": 1,
+            "probability": 0.3
+          }
+        ]
       },
       "noble_decree": {
         "id": "noble_decree",
         "name": "Noble Decree",
-        "conditions": {
-          "year": { "gte": 1000 },
-          "factions.Noble Houses.influence": { "gte": 40 }
-        },
-        "effects": {
-          "factions.Noble Houses.power": 15,
-          "factions.Merchant League.trade_income": 10,
-          "factions.Noble Houses.stability": 10
-        },
-        "followup_events": ["peasant_reaction"]
+        "conditions": [
+          {
+            "type": "year",
+            "operator": ">=",
+            "value": 1000
+          },
+          {
+            "type": "faction",
+            "faction": "Noble Houses",
+            "stat": "influence",
+            "operator": ">=",
+            "value": 40
+          }
+        ],
+        "effects": [
+          {
+            "type": "modify_stat",
+            "faction": "Noble Houses",
+            "stat": "power",
+            "value": 15
+          },
+          {
+            "type": "modify_stat",
+            "faction": "Merchant League",
+            "stat": "trade_income",
+            "value": 10
+          },
+          {
+            "type": "modify_stat",
+            "faction": "Noble Houses",
+            "stat": "stability",
+            "value": 10
+          }
+        ],
+        "followup_events": [
+          {
+            "id": "peasant_reaction",
+            "delay": 1,
+            "probability": 0.3
+          }
+        ]
       },
       "temple_investigation": {
         "id": "temple_investigation",
         "name": "Temple Investigation",
-        "conditions": {
-          "year": { "gte": 1000 },
-          "factions.Temple of Light.influence": { "gte": 40 }
-        },
-        "effects": {
-          "factions.Temple of Light.influence": 10,
-          "factions.Dark Brotherhood.stability": -20,
-          "factions.Temple of Light.power": 15
-        },
-        "followup_events": ["dark_brotherhood_retreat"]
+        "conditions": [
+          {
+            "type": "year",
+            "operator": ">=",
+            "value": 1000
+          },
+          {
+            "type": "faction",
+            "faction": "Temple of Light",
+            "stat": "influence",
+            "operator": ">=",
+            "value": 40
+          }
+        ],
+        "effects": [
+          {
+            "type": "modify_stat",
+            "faction": "Temple of Light",
+            "stat": "influence",
+            "value": 10
+          },
+          {
+            "type": "modify_stat",
+            "faction": "Dark Brotherhood",
+            "stat": "stability",
+            "value": -20
+          },
+          {
+            "type": "modify_stat",
+            "faction": "Temple of Light",
+            "stat": "power",
+            "value": 15
+          }
+        ],
+        "followup_events": [
+          {
+            "id": "dark_brotherhood_retreat",
+            "delay": 1,
+            "probability": 0.3
+          }
+        ]
       },
       "dark_brotherhood_retreat": {
         "id": "dark_brotherhood_retreat",
         "name": "Dark Brotherhood Retreat",
-        "conditions": {
-          "year": { "gte": 1000 },
-          "factions.Dark Brotherhood.stability": { "lte": 40 }
-        },
-        "effects": {
-          "factions.Dark Brotherhood.power": -15,
-          "factions.Dark Brotherhood.stability": 20,
-          "factions.Temple of Light.influence": 10
-        },
+        "conditions": [
+          {
+            "type": "year",
+            "operator": ">=",
+            "value": 1000
+          },
+          {
+            "type": "faction",
+            "faction": "Dark Brotherhood",
+            "stat": "stability",
+            "operator": "<=",
+            "value": 40
+          }
+        ],
+        "effects": [
+          {
+            "type": "modify_stat",
+            "faction": "Dark Brotherhood",
+            "stat": "power",
+            "value": -15
+          },
+          {
+            "type": "modify_stat",
+            "faction": "Dark Brotherhood",
+            "stat": "stability",
+            "value": 20
+          },
+          {
+            "type": "modify_stat",
+            "faction": "Temple of Light",
+            "stat": "influence",
+            "value": 10
+          }
+        ],
         "followup_events": []
       },
       "dark_retaliation": {
         "id": "dark_retaliation",
         "name": "Dark Retaliation",
-        "conditions": {
-          "year": { "gte": 1000 },
-          "factions.Dark Brotherhood.stability": { "lte": 60 }
-        },
-        "effects": {
-          "factions.Dark Brotherhood.power": 20,
-          "factions.Mages' Guild.stability": -20,
-          "factions.Dark Brotherhood.influence": 15
-        },
+        "conditions": [
+          {
+            "type": "year",
+            "operator": ">=",
+            "value": 1000
+          },
+          {
+            "type": "faction",
+            "faction": "Dark Brotherhood",
+            "stat": "stability",
+            "operator": "<=",
+            "value": 60
+          }
+        ],
+        "effects": [
+          {
+            "type": "modify_stat",
+            "faction": "Dark Brotherhood",
+            "stat": "power",
+            "value": 20
+          },
+          {
+            "type": "modify_stat",
+            "faction": "Mages' Guild",
+            "stat": "stability",
+            "value": -20
+          },
+          {
+            "type": "modify_stat",
+            "faction": "Dark Brotherhood",
+            "stat": "influence",
+            "value": 15
+          }
+        ],
         "followup_events": []
       },
       "merchant_rivalry": {
         "id": "merchant_rivalry",
         "name": "Merchant Rivalry",
-        "conditions": {
-          "year": { "gte": 1000 },
-          "factions.Merchant League.trade_income": { "gte": 50 }
-        },
-        "effects": {
-          "factions.Merchant League.stability": -15,
-          "factions.Merchant League.trade_income": 10,
-          "factions.Noble Houses.influence": 10
-        },
+        "conditions": [
+          {
+            "type": "year",
+            "operator": ">=",
+            "value": 1000
+          },
+          {
+            "type": "faction",
+            "faction": "Merchant League",
+            "stat": "trade_income",
+            "operator": ">=",
+            "value": 50
+          }
+        ],
+        "effects": [
+          {
+            "type": "modify_stat",
+            "faction": "Merchant League",
+            "stat": "stability",
+            "value": -15
+          },
+          {
+            "type": "modify_stat",
+            "faction": "Merchant League",
+            "stat": "trade_income",
+            "value": 10
+          },
+          {
+            "type": "modify_stat",
+            "faction": "Noble Houses",
+            "stat": "influence",
+            "value": 10
+          }
+        ],
         "followup_events": []
       },
       "temple_golden_age": {
         "id": "temple_golden_age",
         "name": "Temple Golden Age",
-        "conditions": {
-          "year": { "gte": 1000 },
-          "factions.Temple of Light.influence": { "gte": 60 }
-        },
-        "effects": {
-          "factions.Temple of Light.influence": 15,
-          "factions.Temple of Light.stability": 20,
-          "factions.Temple of Light.power": 10
-        },
+        "conditions": [
+          {
+            "type": "year",
+            "operator": ">=",
+            "value": 1000
+          },
+          {
+            "type": "faction",
+            "faction": "Temple of Light",
+            "stat": "influence",
+            "operator": ">=",
+            "value": 60
+          }
+        ],
+        "effects": [
+          {
+            "type": "modify_stat",
+            "faction": "Temple of Light",
+            "stat": "influence",
+            "value": 15
+          },
+          {
+            "type": "modify_stat",
+            "faction": "Temple of Light",
+            "stat": "stability",
+            "value": 20
+          },
+          {
+            "type": "modify_stat",
+            "faction": "Temple of Light",
+            "stat": "power",
+            "value": 10
+          }
+        ],
         "followup_events": []
       },
       "colonization": {
         "id": "colonization",
         "name": "Colonization",
-        "conditions": {
-          "year": { "gte": 1000 },
-          "factions.Noble Houses.influence": { "gte": 40 }
-        },
-        "effects": {
-          "factions.Noble Houses.power": 20,
-          "factions.Merchant League.trade_income": 25,
-          "factions.Rangers' Order.influence": 15
-        },
+        "conditions": [
+          {
+            "type": "year",
+            "operator": ">=",
+            "value": 1000
+          },
+          {
+            "type": "faction",
+            "faction": "Noble Houses",
+            "stat": "influence",
+            "operator": ">=",
+            "value": 40
+          }
+        ],
+        "effects": [
+          {
+            "type": "modify_stat",
+            "faction": "Noble Houses",
+            "stat": "power",
+            "value": 20
+          },
+          {
+            "type": "modify_stat",
+            "faction": "Merchant League",
+            "stat": "trade_income",
+            "value": 25
+          },
+          {
+            "type": "modify_stat",
+            "faction": "Rangers' Order",
+            "stat": "influence",
+            "value": 15
+          }
+        ],
         "followup_events": []
       },
       "peasant_reaction": {
         "id": "peasant_reaction",
         "name": "Peasant Reaction",
-        "conditions": {
-          "year": { "gte": 1000 },
-          "factions.Noble Houses.influence": { "gte": 50 }
-        },
-        "effects": {
-          "factions.Noble Houses.stability": -20,
-          "factions.Dark Brotherhood.influence": 15,
-          "factions.Noble Houses.power": -10
-        },
+        "conditions": [
+          {
+            "type": "year",
+            "operator": ">=",
+            "value": 1000
+          },
+          {
+            "type": "faction",
+            "faction": "Noble Houses",
+            "stat": "influence",
+            "operator": ">=",
+            "value": 50
+          }
+        ],
+        "effects": [
+          {
+            "type": "modify_stat",
+            "faction": "Noble Houses",
+            "stat": "stability",
+            "value": -20
+          },
+          {
+            "type": "modify_stat",
+            "faction": "Dark Brotherhood",
+            "stat": "influence",
+            "value": 15
+          },
+          {
+            "type": "modify_stat",
+            "faction": "Noble Houses",
+            "stat": "power",
+            "value": -10
+          }
+        ],
         "followup_events": []
       }
     }

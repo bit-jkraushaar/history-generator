@@ -38,8 +38,13 @@ class Simulation:
             all_events.extend(events)
         
         # Get fantasy world events
+        print("\nGeneriere Fantasy-Events...")
         fantasy_events = self.fantasy_generator.generate_events(self.year)
-        all_events.extend(fantasy_events)
+        if fantasy_events:
+            print(f"Gefundene Fantasy-Events: {len(fantasy_events)}")
+            all_events.extend(fantasy_events)
+        else:
+            print("Keine Fantasy-Events gefunden")
         
         return all_events
 

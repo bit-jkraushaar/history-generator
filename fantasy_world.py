@@ -1,6 +1,7 @@
 import json
 from typing import Dict, Any, List, Tuple
 import random
+from event_processor import EventProcessor
 
 class FantasyWorld:
     def __init__(self):
@@ -80,162 +81,26 @@ class FantasyWorld:
                 }
             }
         }
-        self.events = self._load_events()
-        self.active_events: Dict[str, int] = {}
-
-    def _load_events(self) -> Dict[str, Any]:
-        with open('event_definitions.json', 'r') as f:
-            return json.load(f)['events']
-
-    def _check_condition(self, condition: Dict[str, Any], value: Any) -> bool:
-        for op, threshold in condition.items():
-            if op == "gte":
-                if not (value >= threshold):
-                    return False
-            elif op == "lte":
-                if not (value <= threshold):
-                    return False
-            elif op == "gt":
-                if not (value > threshold):
-                    return False
-            elif op == "lt":
-                if not (value < threshold):
-                    return False
-            elif op == "eq":
-                if not (value == threshold):
-                    return False
-        return True
-
-    def _get_value(self, path: str) -> Any:
-        parts = path.split('.')
-        current = self.state
-        for part in parts:
-            current = current[part]
-        return current
-
-    def _set_value(self, path: str, value: Any):
-        parts = path.split('.')
-        current = self.state
-        for part in parts[:-1]:
-            current = current[part]
-        current[parts[-1]] = value
-
-    def _apply_effect(self, effect: Dict[str, Any]):
-        for path, value in effect.items():
-            current_value = self._get_value(path)
-            if isinstance(value, int):
-                # Relative change
-                new_value = current_value + value
-                self._set_value(path, max(0, min(100, new_value)))
-            else:
-                # Absolute value
-                self._set_value(path, value)
-
-    def _add_followup_events(self, followup_events: List[str]):
-        # Priority for follow-up events (decreases each year)
-        initial_priority = 3
-        for event_id in followup_events:
-            self.active_events[event_id] = initial_priority
-
-    def update_active_events(self):
-        # Reduce the priority of all active events by 1
-        events_to_remove = []
-        for event_id, priority in self.active_events.items():
-            if priority > 1:
-                self.active_events[event_id] = priority - 1
-            else:
-                # Remove events with priority 0
-                events_to_remove.append(event_id)
-        
-        for event_id in events_to_remove:
-            self.active_events.pop(event_id)
-
-    def check_event_conditions(self, event: Dict[str, Any]) -> bool:
-        for path, condition in event['conditions'].items():
-            if path == 'year':
-                if not self._check_condition(condition, self.state['year']):
-                    return False
-            else:
-                value = self._get_value(path)
-                if not self._check_condition(condition, value):
-                    return False
-        return True
+        print("Initialisiere EventProcessor...")
+        self.event_processor = EventProcessor('event_definitions.json')
+        print("EventProcessor initialisiert")
 
     def generate_events(self) -> List[Dict[str, Any]]:
-        possible_events = []
+        # Update the year in the state
+        self.state['year'] = self.state['year'] + 1
+        print(f"\nJahr {self.state['year']}:")
+        print("Aktueller Zustand:")
+        print(f"  Central Valley magical_energy: {self.state['regions']['Central Valley']['magical_energy']}")
+        print(f"  Mages' Guild stability: {self.state['factions']['Mages\' Guild']['stability']}")
         
-        # Dictionary to store event IDs for later
-        event_id_map = {}
+        # Process events using the EventProcessor
+        triggered_events = self.event_processor.process_events(self.state)
         
-        # Check for natural events
-        for event_id, event in self.events['natural'].items():
-            if self.check_event_conditions(event):
-                # Add category and ID to the event
-                event['category'] = 'natural'
-                event['id'] = event_id
-                event_id_map[event_id] = event
-                possible_events.append(event)
+        if triggered_events:
+            print("\nAusgelöste Events:")
+            for event in triggered_events:
+                print(f"  - {event['name']} ({event['category']})")
+        else:
+            print("\nKeine Events ausgelöst")
         
-        # Check for magical events
-        for event_id, event in self.events['magical'].items():
-            if self.check_event_conditions(event):
-                # Add category and ID to the event
-                event['category'] = 'magical'
-                event['id'] = event_id
-                event_id_map[event_id] = event
-                possible_events.append(event)
-        
-        # Check for political events
-        for event_id, event in self.events['political'].items():
-            if self.check_event_conditions(event):
-                # Add category and ID to the event
-                event['category'] = 'political'
-                event['id'] = event_id
-                event_id_map[event_id] = event
-                possible_events.append(event)
-        
-        # Randomly select some events based on their type
-        selected_events = []
-        if possible_events:
-            # Reduced probabilities for all event types
-            natural_chance = 0.005  # Reduced from 0.01 to 0.005 (0.5%)
-            magical_chance = 0.002  # Reduced from 0.005 to 0.002 (0.2%)
-            political_chance = 0.004  # Reduced from 0.01 to 0.004 (0.4%)
-            
-            # Increased bonus for active events
-            active_event_bonus_multiplier = 5.0
-            
-            for event in possible_events:
-                event_id = event.get('id', '')
-                category = event.get('category', '')
-                
-                # Base probability based on category
-                base_chance = 0
-                if category == 'natural':
-                    base_chance = natural_chance
-                elif category == 'magical':
-                    base_chance = magical_chance
-                elif category == 'political':
-                    base_chance = political_chance
-                
-                # Increase probability for active events
-                final_chance = base_chance
-                if event_id in self.active_events:
-                    # Probability is increased based on the priority of the event
-                    priority = self.active_events[event_id]
-                    final_chance = base_chance * (active_event_bonus_multiplier * priority)
-                
-                # Check if the event occurs
-                if random.random() < final_chance:
-                    selected_events.append(event)
-        
-        # Apply effects and track followup events
-        for event in selected_events:
-            self._apply_effect(event['effects'])
-            # Use new method to add follow-up events
-            self._add_followup_events(event['followup_events'])
-        
-        # Update priorities of active events for the next year
-        self.update_active_events()
-        
-        return selected_events
+        return triggered_events

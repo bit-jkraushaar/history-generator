@@ -3,25 +3,25 @@ from fantasy_world import FantasyWorld
 from typing import List
 
 class FantasyEvent(Event):
-    def __init__(self, year: int, event_data: dict, category: str = None):
+    def __init__(self, year: int, event_data: dict):
         self.event_data = event_data
-        self.category = category  # Speichern der Kategorie für jedes Ereignis
+        self.category = event_data.get('category', 'unknown')
         super().__init__(year, event_data['name'])
 
 class NaturalEvent(FantasyEvent):
     def __init__(self, year: int, event_data: dict):
-        super().__init__(year, event_data, category="natural")
+        super().__init__(year, event_data)
         self.severity = event_data.get('severity', 'moderate')
         self.region = event_data.get('region', 'unknown')
 
 class MagicalEvent(FantasyEvent):
     def __init__(self, year: int, event_data: dict):
-        super().__init__(year, event_data, category="magical")
+        super().__init__(year, event_data)
         self.impact = event_data.get('impact', 'unknown')
 
 class PoliticalEvent(FantasyEvent):
     def __init__(self, year: int, event_data: dict):
-        super().__init__(year, event_data, category="political")
+        super().__init__(year, event_data)
         self.faction = event_data.get('faction', 'unknown')
 
 class FantasyEventGenerator:
@@ -30,13 +30,10 @@ class FantasyEventGenerator:
 
     def generate_events(self, year: int) -> List[FantasyEvent]:
         self.world.state['year'] = year
-        # Entfernung des update_season() Aufrufs, da Jahreszeiten nicht mehr berücksichtigt werden sollen
-        
-        events = []
         raw_events = self.world.generate_events()
         
+        events = []
         for event_data in raw_events:
-            # Hinzufügen der Kategorie zu den Ereignisdaten
             category = event_data.get('category', '')
             if category == 'natural':
                 events.append(NaturalEvent(year, event_data))
