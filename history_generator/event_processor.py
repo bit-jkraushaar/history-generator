@@ -38,12 +38,46 @@ class EventProcessor:
         event_logger.info("EventProcessor initialized")
 
     def _load_events(self):
+        """
+        Loads event definitions from the JSON file.
+        
+        Returns:
+            dict: The loaded event definitions or an empty dictionary in case of error
+            
+        Raises:
+            FileNotFoundError: When the event file cannot be found
+            json.JSONDecodeError: When the JSON file is invalid
+            ValueError: When the event definitions are invalid
+        """
         try:
             with open(self.event_file_path, 'r') as file:
-                return json.load(file)
+                events = json.load(file)
+                
+            # Validate event structure
+            if not isinstance(events, dict):
+                raise ValueError("Event definitions must be a dictionary")
+                
+            if "events" not in events:
+                event_logger.warning("No event definitions found, using empty dictionary")
+                return {"events": {}}
+                
+            if not isinstance(events["events"], dict):
+                raise ValueError("'events' must be a dictionary")
+                
+            return events
+            
+        except FileNotFoundError:
+            event_logger.error(f"Event file not found: {self.event_file_path}")
+            raise
+        except json.JSONDecodeError as e:
+            event_logger.error(f"Invalid JSON format in event file: {e}")
+            raise
+        except ValueError as e:
+            event_logger.error(f"Invalid event definitions: {e}")
+            raise
         except Exception as e:
-            event_logger.error(f"Error loading events: {e}")
-            return {"events": {}}
+            event_logger.error(f"Unexpected error while loading events: {e}")
+            raise
 
     def process_events(self, world_state, current_year):
         triggered_events = []

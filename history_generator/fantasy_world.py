@@ -77,8 +77,17 @@ class FantasyWorld:
                 "stability": 40
             }
         }
-        self.event_processor = EventProcessor(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "event_definitions.json"))
-        world_logger.info("FantasyWorld initialized")
+        
+        try:
+            event_file_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "event_definitions.json")
+            self.event_processor = EventProcessor(event_file_path)
+            world_logger.info("FantasyWorld successfully initialized")
+        except Exception as e:
+            world_logger.error(f"Error initializing EventProcessor: {e}")
+            # Create an empty EventProcessor as fallback
+            self.event_processor = EventProcessor("")
+            self.event_processor.events = {"events": {}}
+            world_logger.warning("EventProcessor initialized with empty definitions")
 
     def get_world_state(self):
         return {
