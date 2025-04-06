@@ -60,13 +60,5 @@ class FantasyEventGenerator:
                 events.append(MagicalEvent(year, event_data))
             elif category == 'political':
                 events.append(PoliticalEvent(year, event_data))
-            
-            # Apply effects
-            for effect in event_data.get('effects', []):
-                if effect['type'] == 'modify_stat':
-                    if 'faction' in effect:
-                        self.world.factions[effect['faction']][effect['stat']] += effect['value']
-                    elif 'region' in effect:
-                        self.world.regions[effect['region']][effect['stat']] += effect['value']
         
         return events
