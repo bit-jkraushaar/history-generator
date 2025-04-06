@@ -1,7 +1,7 @@
-from person import Person, male_names, female_names
-from marriage_market import MarriageMarket
-from dynasty import Dynasty
-from fantasy_events import FantasyEventGenerator, FantasyWorld
+from .person import Person, male_names, female_names
+from .marriage_market import MarriageMarket
+from .dynasty import Dynasty
+from .fantasy_events import FantasyEventGenerator, FantasyWorld
 import random
 
 class Simulation:

@@ -1,5 +1,5 @@
-from events import Event
-from fantasy_world import FantasyWorld
+from .events import Event
+from .fantasy_world import FantasyWorld
 from typing import List
 
 class FantasyEvent(Event):
@@ -43,8 +43,8 @@ class PoliticalEvent(FantasyEvent):
         super().__init__(year, event_data)
 
 class FantasyEventGenerator:
-    def __init__(self, fantasy_world: FantasyWorld = None):
-        self.world = fantasy_world if fantasy_world else FantasyWorld()
+    def __init__(self, fantasy_world: FantasyWorld):
+        self.world = fantasy_world
 
     def generate_events(self, year: int) -> List[FantasyEvent]:
         # Set the year directly

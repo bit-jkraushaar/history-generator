@@ -1,6 +1,6 @@
-from person import Person
-from marriage_market import MarriageMarket
-from events import SuccessionEvent, NoSuccessorEvent, DeathEvent, MarriageEvent
+from .person import Person
+from .marriage_market import MarriageMarket
+from .events import SuccessionEvent, NoSuccessorEvent, DeathEvent, MarriageEvent
 
 class Dynasty:
     def __init__(self, name: str, king: Person, queen: Person):

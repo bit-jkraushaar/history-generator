@@ -1,5 +1,5 @@
 import random
-from person import generate_partner, MarriageCandidate  # ggf. Heiratskandidat separat definieren
+from .person import generate_partner, MarriageCandidate  # ggf. Heiratskandidat separat definieren
 
 class MarriageMarket:
     def __init__(self):

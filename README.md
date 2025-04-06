@@ -1,6 +1,21 @@
 # history-generator
 A generator for the history of a random fantasy world, including a simulation for dynasties.
 
+## Project Structure
+```
+history-generator/
+├── scripts/              # Main scripts and entry points
+│   └── main.py          # Main simulation script
+├── history_generator/    # Core simulation modules
+│   ├── events.py        # Event definitions
+│   ├── fantasy_events.py # Fantasy event system
+│   ├── fantasy_world.py # Fantasy world simulation
+│   ├── simulation.py    # Main simulation logic
+│   └── ...
+├── data/                # Data files and configurations
+└── docs/                # Documentation
+```
+
 ## Command Line Parameters
 
 The simulation can be customized using the following command line parameters:
@@ -25,25 +40,25 @@ The simulation can be customized using the following command line parameters:
 
 Show only fantasy events:
 ```bash
-python main.py --show-fantasy
+python scripts/main.py --show-fantasy
 ```
 
 Show fantasy events and family tree:
 ```bash
-python main.py --show-fantasy --show-family-tree
+python scripts/main.py --show-fantasy --show-family-tree
 ```
 
 Show specific fantasy event types:
 ```bash
-python main.py --show-natural --show-magical
+python scripts/main.py --show-natural --show-magical
 ```
 
 Show dynasty events with a longer duration:
 ```bash
-python main.py --show-deaths --show-marriages --duration 100
+python scripts/main.py --show-deaths --show-marriages --duration 100
 ```
 
 Show all events and start in a different year:
 ```bash
-python main.py --show-all --start-year 1200
+python scripts/main.py --show-all --start-year 1200
 ```

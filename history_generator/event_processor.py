@@ -1,8 +1,7 @@
-from typing import Dict, List, Optional, Any
 import json
 from enum import Enum
 import random
-from logger_config import event_logger, world_logger
+from .logger_config import event_logger, world_logger
 
 class ConditionType(Enum):
     SEASON = "season"

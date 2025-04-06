@@ -1,5 +1,5 @@
 import random
-from events import MarriageEvent, BirthEvent, DeathEvent
+from .events import MarriageEvent, BirthEvent, DeathEvent
 from typing import Optional, Tuple
 
 male_names = [

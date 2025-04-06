@@ -9,7 +9,7 @@ The Event System is a flexible and extensible framework for managing in-game eve
 
 ## Event Definitions
 
-Each event follows this structure:
+Event definitions are stored in `data/event_definitions.json`. Each event follows this structure:
 
 ```json
 {

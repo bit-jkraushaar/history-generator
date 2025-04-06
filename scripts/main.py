@@ -1,7 +1,14 @@
 import argparse
-from simulation import Simulation
-from events import DeathEvent, MarriageEvent, BirthEvent, SuccessionEvent, NoSuccessorEvent
-from fantasy_events import NaturalEvent, MagicalEvent, PoliticalEvent
+import os
+import sys
+
+# Add the project root directory to Python path
+project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(project_root)
+
+from history_generator.simulation import Simulation
+from history_generator.events import DeathEvent, MarriageEvent, BirthEvent, SuccessionEvent, NoSuccessorEvent
+from history_generator.fantasy_events import NaturalEvent, MagicalEvent, PoliticalEvent
 import random
 
 def parse_arguments():

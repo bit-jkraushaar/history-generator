@@ -1,8 +1,6 @@
-import json
-from typing import Dict, Any, List, Tuple
-import random
-from event_processor import EventProcessor
-from logger_config import world_logger, event_logger
+from .event_processor import EventProcessor
+from .logger_config import world_logger
+import os
 
 class FantasyWorld:
     def __init__(self):
@@ -79,7 +77,7 @@ class FantasyWorld:
                 "stability": 40
             }
         }
-        self.event_processor = EventProcessor("event_definitions.json")
+        self.event_processor = EventProcessor(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "event_definitions.json"))
         world_logger.info("FantasyWorld initialized")
 
     def get_world_state(self):
