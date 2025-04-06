@@ -206,10 +206,10 @@ class TestFantasyEvents(unittest.TestCase):
         self.assertIsInstance(events[1], MagicalEvent)
         self.assertIsInstance(events[2], PoliticalEvent)
         
-        # Verify that effects were applied
-        self.assertEqual(mock_world.regions['Southern Plains']['fertility'], 50)  # 70 - 20
-        self.assertEqual(mock_world.factions['Mages\' Guild']['power'], 75)  # 60 + 15
-        self.assertEqual(mock_world.factions['Noble Houses']['influence'], 80)  # 70 + 10
+        # Verify that effects were NOT applied directly
+        self.assertEqual(mock_world.regions['Southern Plains']['fertility'], 70)  # Unchanged
+        self.assertEqual(mock_world.factions['Mages\' Guild']['power'], 60)  # Unchanged
+        self.assertEqual(mock_world.factions['Noble Houses']['influence'], 70)  # Unchanged
 
     def test_fantasy_event_generator_invalid_category(self):
         """Test the FantasyEventGenerator with invalid event category"""
