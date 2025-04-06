@@ -1,110 +1,130 @@
+from typing import Optional, List
+from datetime import datetime
 import random
-from .events import MarriageEvent, BirthEvent, DeathEvent
-from typing import Optional, Tuple
-
-male_names = [
-    "Baelor", "Draven", "Falathar", "Hadrian", "Jareth", "Lysander", "Nyx", "Oberon",
-    "Quintus", "Thorian", "Valerian", "Xander", "Aric", "Caspian", "Finnian", "Haelen",
-    "Jorvik", "Kael", "Maelor", "Orion", "Raffael", "Tiberius", "Zaltar", "Aegon",
-    "Balin", "Corvus", "Darius", "Eldrin", "Fenris", "Gideon", "Hektor", "Ignis",
-    "Jarik", "Kaelan", "Lorien", "Marius", "Nereus", "Osric", "Phelan", "Ragnar",
-    "Silas", "Talon", "Ulric", "Viggo", "Wulfric", "Xylon", "Yorath", "Zephyr"
-]
-female_names = [
-    "Aeliana", "Caelia", "Elyndra", "Gwendolyn", "Isolde", "Kyra", "Myranda", "Phiala",
-    "Rhiannon", "Seraphina", "Ursula", "Wynter", "Ylva", "Zephyra", "Brynn", "Dahlia",
-    "Elowen", "Giselle", "Ilaria", "Lyra", "Niamh", "Primrose", "Saoirse", "Ulani",
-    "Vespera", "Wren", "Xylia", "Yvaine", "Anya", "Brynja", "Calista", "Demetra",
-    "Eira", "Fiona", "Gwyneira", "Hestia", "Iona", "Juno", "Kassandra", "Lilith",
-    "Morgana", "Nixie", "Ophelia", "Pandora", "Ravenna", "Selene", "Titania", "Valencia",
-    "Winifred", "Xanthe", "Yara", "Zelda"
-]
-
-all_persons = []
+from .logger_config import world_logger
+from .config.names import MALE_NAMES, FEMALE_NAMES
+from .config.settings import PERSON, CHILDBIRTH
 
 class Person:
-    def __init__(self, name, age, health, gender, birth_year=0, parents: Optional[Tuple['Person', 'Person']] = None):
+    """
+    Represents a person in the simulation.
+    
+    Attributes:
+        id: Unique ID of the person
+        name: Name of the person
+        gender: Gender of the person
+        birth_year: Year of birth
+        death_year: Year of death (None if alive)
+        faction: Faction the person belongs to
+        region: Region where the person lives
+        health: Health status (0-100)
+        partners: List of partners (current and previous)
+        children: List of children
+    """
+    
+    @classmethod
+    def generate_random_name(cls, gender: str) -> str:
+        """
+        Generates a random name based on gender.
+        
+        Args:
+            gender: Gender of the person ('male' or 'female')
+            
+        Returns:
+            A randomly selected name
+        """
+        if gender.lower() == 'male':
+            return random.choice(MALE_NAMES)
+        elif gender.lower() == 'female':
+            return random.choice(FEMALE_NAMES)
+        else:
+            raise ValueError(f"Invalid gender: {gender}")
+    
+    def __init__(self, name: str, gender: str, birth_year: int, faction: str, region: str):
+        """
+        Initializes a new person.
+        
+        Args:
+            name: Name of the person
+            gender: Gender of the person
+            birth_year: Year of birth
+            faction: Faction the person belongs to
+            region: Region where the person lives
+        """
+        self.id = id(self)  # Unique ID based on object ID
         self.name = name
-        self.age = age
-        self.health = health
         self.gender = gender
-        self.partner = None
-        self.partner_list = []
-        self.children = []
-        self.dead = False
-        self.was_king = False
-        self.marriage_age = random.randint(18, 30)
         self.birth_year = birth_year
         self.death_year = None
-        self.parents = parents
-        all_persons.append(self)
-
-    def age_up(self, year, marriage_market=None):
-        self.age += 1
-        self.health -= random.randint(0, 5)
-
-        # Check if person dies
-        if self.health <= 0 or self.age > 80 + random.randint(0, 40):
-            self.dead = True
-            self.death_year = year
-            return DeathEvent(
-                year=year,
-                message=f"{self.name} has died at the age of {self.age}",
-                person_name=self.name,
-                age=self.age
-            )
-
-        if self.age >= 18 and not self.partner and marriage_market:
-            chance = min(0.1 + (self.age - 18) * 0.05, 0.9)
-            if random.random() < chance:
-                partner = marriage_market.find_partner(self)
-                if partner:
-                    self.marry(partner)
-                    marriage_market.remove(partner)
-                    return MarriageEvent(
-                        year=year,
-                        message=f"{self.name} marries {partner.name} at the age of {self.age} years",
-                        person1=self.name,
-                        person2=partner.name,
-                        age=self.age
-                    )
-                else:
-                    return None
-        return None
-
-    def is_dead(self, year):
-        return self.dead
-
-    def marry(self, partner):
-        self.partner = partner
-        partner.partner = self
-        self.partner_list.append(partner)
-        partner.partner_list.append(self)
-
-    def give_birth(self, year):
-        if self.gender == "female" and self.partner and 16 < self.age < 45:
-            if random.random() < 0.3:
-                gender = "male" if random.random() < 0.5 else "female"
-                name = random.choice(male_names) if gender == "male" else random.choice(female_names)
-                child = Person(name, 0, 100, gender, birth_year=year, parents=(self, self.partner))
-                self.children.append(child)
-                self.partner.children.append(child)
-                return BirthEvent(
-                    year=year,
-                    message=f"{self.name} and {self.partner.name} have a new child: {child.name}",
-                    child_name=child.name,
-                    mother_name=self.name,
-                    father_name=self.partner.name
-                )
-        return None
-
-def generate_partner(gender, year):
-    name = random.choice(male_names) if gender == "male" else random.choice(female_names)
-    age = random.randint(18, 40)
-    return Person(name, age, 100, gender, birth_year=year - age)
-
-
-class MarriageCandidate:
-    def __init__(self, person, remaining_years):
-        self.person = person
-        self.remaining_years = remaining_years
+        self.faction = faction
+        self.region = region
+        self.health = PERSON["initial_health"]
+        self.partners = []
+        self.children = []
+        world_logger.debug(f"Created new person: {name}")
+        
+    @property
+    def age(self) -> int:
+        """Calculates the current age of the person."""
+        if self.death_year:
+            return self.death_year - self.birth_year
+        return 0  # Age will be calculated based on current_year in is_dead method
+        
+    def is_dead(self, current_year: Optional[int] = None) -> bool:
+        """
+        Checks if the person is deceased.
+        
+        Args:
+            current_year: Optional year for calculation
+            
+        Returns:
+            True if the person is deceased, False otherwise
+        """
+        if self.death_year is not None:
+            return True
+            
+        if current_year is None:
+            return False  # If no year is provided, assume person is alive
+            
+        age = current_year - self.birth_year
+        
+        # Only set death_year if the person actually dies
+        if self.health <= 0 or age > PERSON["max_base_age"] + random.randint(0, PERSON["max_age_bonus"]):
+            self.death_year = current_year
+            return True
+            
+        return False
+        
+    def marry(self, partner: 'Person') -> None:
+        """
+        Marries another person.
+        
+        Args:
+            partner: The person to marry
+        """
+        if partner not in self.partners:
+            self.partners.append(partner)
+            if self not in partner.partners:
+                partner.partners.append(self)
+            world_logger.info(f"{self.name} married {partner.name}")
+            
+    def can_have_child(self, current_year: int) -> bool:
+        """
+        Checks if the person can have a child.
+        
+        Args:
+            current_year: The current year
+            
+        Returns:
+            True if the person can have a child, False otherwise
+        """
+        age = current_year - self.birth_year
+        has_living_partner = any(not p.is_dead(current_year) for p in self.partners)
+        return (self.gender == "female" and 
+                has_living_partner and 
+                CHILDBIRTH["min_age"] < age < CHILDBIRTH["max_age"] and 
+                not self.is_dead(current_year))
+                
+    def __str__(self) -> str:
+        """Returns a string representation of the person."""
+        return f"{self.name} ({self.gender}, {self.age} years old)"
