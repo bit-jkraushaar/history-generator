@@ -59,6 +59,7 @@ class TestEventProcessor(unittest.TestCase):
                     "mana_aftermath": {
                         "name": "Mana Aftermath",
                         "description": "The aftermath of the surge",
+                        "is_followup": True,
                         "effects": [
                             {
                                 "type": "modify_stat",

@@ -13,30 +13,40 @@ Event definitions are stored in `data/event_definitions.json`. Each event follow
 
 ```json
 {
-  "id": "event_id",
-  "name": "Event Name",
-  "conditions": [
-    {
-      "type": "condition_type",
-      "operator": "comparison_operator",
-      "value": "condition_value"
+  "events": {
+    "category_name": {
+      "event_id": {
+        "name": "Event Name",
+        "conditions": [
+          {
+            "type": "condition_type",
+            "operator": "comparison_operator",
+            "value": "condition_value"
+          }
+        ],
+        "effects": [
+          {
+            "type": "effect_type",
+            "parameters": {}
+          }
+        ],
+        "followup_events": [
+          {
+            "id": "followup_event_id",
+            "delay": delay_in_years,
+            "probability": probability_value
+          }
+        ],
+        "is_followup": false
+      }
     }
-  ],
-  "effects": [
-    {
-      "type": "effect_type",
-      "parameters": {}
-    }
-  ],
-  "followup_events": [
-    {
-      "id": "followup_event_id",
-      "delay": delay_in_years,
-      "probability": probability_value
-    }
-  ]
+  }
 }
 ```
+
+### Categories
+
+Events are organized into categories (e.g., natural, magical, political) for better organization and processing.
 
 ### Condition Types
 
@@ -59,7 +69,6 @@ Event definitions are stored in `data/event_definitions.json`. Each event follow
 
 - `modify_stat`: Modifies a statistic value
 - `change_leader`: Changes a faction's leader
-- `trigger_event`: Triggers another event
 
 ## Common Conditions
 
@@ -72,7 +81,14 @@ Common conditions are reusable condition blocks:
     "faction": "Noble Houses",
     "stat": "stability",
     "operator": "<=",
-    "value": 50
+    "value": 30
+  },
+  "magical_instability": {
+    "type": "region",
+    "region": "Central Valley",
+    "stat": "magical_energy",
+    "operator": ">=",
+    "value": 80
   }
 }
 ```
@@ -91,8 +107,9 @@ Events can trigger follow-up events:
 ]
 ```
 
-- `delay`: Delay in years before the event triggers
-- `probability`: Probability of the event triggering (0.0 to 1.0)
+- `delay`: Delay in years before the event triggers (must be a number)
+- `probability`: Probability of the event triggering (must be between 0.0 and 1.0)
+- `is_followup`: Boolean flag indicating if this is a follow-up event
 
 ## Validation
 
@@ -101,6 +118,9 @@ The system validates:
 - Correct structure of conditions and effects
 - Existence of referenced events
 - Validity of operators and values
+- Type correctness of values (e.g., delay must be numeric)
+- Probability values (must be between 0 and 1)
+- Structure of follow-up events
 
 ## Extending the System
 
@@ -116,50 +136,61 @@ To add new events:
 ### Natural Event
 ```json
 {
-  "id": "dragon_migration",
-  "name": "Dragon Migration",
-  "conditions": [
-    {
-      "type": "year",
-      "operator": ">=",
-      "value": 1000
-    },
-    {
-      "type": "season",
-      "operator": "==",
-      "value": "autumn"
+  "events": {
+    "natural": {
+      "dragon_migration": {
+        "name": "Dragon Migration",
+        "conditions": [
+          {
+            "type": "year",
+            "operator": ">=",
+            "value": 1000
+          },
+          {
+            "type": "season",
+            "operator": "==",
+            "value": "autumn"
+          }
+        ],
+        "effects": [
+          {
+            "type": "modify_stat",
+            "region": "Northern Mountains",
+            "stat": "dragon_activity",
+            "value": 20
+          }
+        ],
+        "is_followup": false
+      }
     }
-  ],
-  "effects": [
-    {
-      "type": "modify_stat",
-      "region": "Northern Mountains",
-      "stat": "dragon_activity",
-      "value": 20
-    }
-  ]
+  }
 }
 ```
 
 ### Political Event
 ```json
 {
-  "id": "mages_guild_coup",
-  "name": "Mages' Guild Coup",
-  "conditions": [
-    {
-      "type": "common",
-      "operator": "==",
-      "value": "magical_instability"
+  "events": {
+    "political": {
+      "mages_guild_coup": {
+        "name": "Mages' Guild Coup",
+        "conditions": [
+          {
+            "type": "common",
+            "value": "magical_instability"
+          }
+        ],
+        "effects": [
+          {
+            "type": "change_leader",
+            "faction": "Mages' Guild",
+            "new_leader": "Archmage Varis"
+          }
+        ],
+        "is_followup": false
+      }
     }
-  ],
-  "effects": [
-    {
-      "type": "change_leader",
-      "faction": "Mages' Guild",
-      "new_leader": "Archmage Varis"
-    }
-  ]
+  }
 }
 ```
 
@@ -184,6 +215,7 @@ To add new events:
    - Use appropriate delays
    - Set reasonable probabilities
    - Consider event chains carefully
+   - Mark follow-up events with `is_followup: true`
 
 ## Troubleshooting
 
@@ -198,6 +230,7 @@ Common issues and solutions:
    - Run validation
    - Check required fields
    - Verify JSON syntax
+   - Ensure proper category structure
 
 3. **Unexpected Effects**
    - Review effect parameters
