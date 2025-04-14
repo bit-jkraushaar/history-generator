@@ -209,4 +209,42 @@ class FantasyWorld:
         """Initializes the factions for the world"""
         world_logger.info("Initializing factions for the Fantasy World")
         self.factions = self.generate_factions(count, required_types)
+        
+        # Initialize faction-specific events
+        self._initialize_faction_events()
+        
         world_logger.info(f"{len(self.factions)} factions have been initialized")
+        
+    def _initialize_faction_events(self):
+        """Initialize faction-specific events for each faction"""
+        world_logger.info("Initializing faction-specific events")
+        
+        # Make sure the event categories exist
+        if "events" not in self.event_processor.events:
+            self.event_processor.events["events"] = {}
+            
+        # Add categories if they don't exist
+        if "faction_specific" not in self.event_processor.events["events"]:
+            self.event_processor.events["events"]["faction_specific"] = {}
+            
+        faction_events_category = self.event_processor.events["events"]["faction_specific"]
+        
+        # Process each faction
+        for faction_name, faction_data in self.factions.items():
+            faction_type = faction_data.get("type")
+            if not faction_type:
+                continue
+                
+            # Find the template for this faction type
+            for template_id, template in self.faction_templates.templates.items():
+                if template.faction_type == faction_type:
+                    # Get faction-specific events from the template
+                    faction_events = template.get_events_for_faction(faction_name)
+                    
+                    # Add these events to the event processor
+                    if faction_events:
+                        world_logger.info(f"Adding {len(faction_events)} events for faction '{faction_name}'")
+                        for event_id, event_data in faction_events.items():
+                            faction_events_category[event_id] = event_data
+                    
+                    break

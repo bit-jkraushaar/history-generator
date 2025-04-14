@@ -8,11 +8,13 @@ class FactionTemplate:
                  faction_type: str, 
                  name_patterns: List[str], 
                  base_stats: Dict[str, int], 
-                 specific_stats: Dict[str, int]):
+                 specific_stats: Dict[str, int],
+                 event_templates: Dict[str, Dict] = None):
         self.faction_type = faction_type
         self.name_patterns = name_patterns
         self.base_stats = base_stats  # power, influence, stability
         self.specific_stats = specific_stats  # type-specific statistics
+        self.event_templates = event_templates or {}  # faction-specific events
 
     def generate_faction(self, name: str = None) -> Dict[str, Any]:
         """Generates a faction based on this blueprint"""
@@ -37,6 +39,42 @@ class FactionTemplate:
         faction_data["type"] = self.faction_type
         
         return faction_data
+        
+    def get_events_for_faction(self, faction_name: str) -> Dict[str, Dict]:
+        """
+        Generate faction-specific events based on the templates
+        
+        Args:
+            faction_name: The name of the faction to generate events for
+            
+        Returns:
+            dict: A dictionary of event IDs to event data
+        """
+        if not self.event_templates:
+            return {}
+            
+        events = {}
+        
+        for event_id, event_template in self.event_templates.items():
+            # Create a deep copy to avoid modifying the template
+            event = event_template.copy()
+            
+            # Replace faction placeholders with actual faction name
+            if "conditions" in event:
+                for condition in event["conditions"]:
+                    if condition.get("type") == "faction" and condition.get("faction") == "{faction}":
+                        condition["faction"] = faction_name
+            
+            if "effects" in event:
+                for effect in event["effects"]:
+                    if effect.get("type") == "modify_stat" and effect.get("faction") == "{faction}":
+                        effect["faction"] = faction_name
+            
+            # Create a unique ID for this faction's event
+            unique_id = f"{faction_name}_{event_id}"
+            events[unique_id] = event
+            
+        return events
 
 # Collection of all available faction blueprints
 class FactionTemplates:
@@ -59,6 +97,69 @@ class FactionTemplates:
                     "magical_knowledge": 75,
                     "arcane_influence": 70,
                     "research_capacity": 80
+                },
+                event_templates={
+                    "arcane_breakthrough": {
+                        "name": "Arkaner Durchbruch",
+                        "description": "Die Magier machen einen bahnbrechenden Fortschritt in der arkanen Forschung",
+                        "conditions": [
+                            {
+                                "type": "faction",
+                                "faction": "{faction}",
+                                "stat": "research_capacity",
+                                "operator": ">=",
+                                "value": 70
+                            },
+                            {
+                                "type": "faction",
+                                "faction": "{faction}",
+                                "stat": "stability",
+                                "operator": ">=",
+                                "value": 60
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "type": "modify_stat",
+                                "faction": "{faction}",
+                                "stat": "power",
+                                "value": 15
+                            },
+                            {
+                                "type": "modify_stat",
+                                "faction": "{faction}",
+                                "stat": "influence",
+                                "value": 10
+                            }
+                        ]
+                    },
+                    "magical_experiment_failure": {
+                        "name": "Fehlgeschlagenes magisches Experiment",
+                        "description": "Ein gefährliches Experiment geht schief und schadet dem Ansehen der Gilde",
+                        "conditions": [
+                            {
+                                "type": "faction",
+                                "faction": "{faction}",
+                                "stat": "stability",
+                                "operator": "<=",
+                                "value": 40
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "type": "modify_stat",
+                                "faction": "{faction}",
+                                "stat": "stability",
+                                "value": -15
+                            },
+                            {
+                                "type": "modify_stat",
+                                "faction": "{faction}",
+                                "stat": "influence",
+                                "value": -10
+                            }
+                        ]
+                    }
                 }
             ),
             
@@ -78,6 +179,69 @@ class FactionTemplates:
                     "legitimacy": 70,
                     "wealth": 80,
                     "military_strength": 65
+                },
+                event_templates={
+                    "lavish_feast": {
+                        "name": "Prächtiges Bankett",
+                        "description": "Das Adelshaus veranstaltet ein opulentes Fest für Verbündete und Rivalen",
+                        "conditions": [
+                            {
+                                "type": "faction",
+                                "faction": "{faction}",
+                                "stat": "wealth",
+                                "operator": ">=",
+                                "value": 70
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "type": "modify_stat",
+                                "faction": "{faction}",
+                                "stat": "influence",
+                                "value": 15
+                            },
+                            {
+                                "type": "modify_stat",
+                                "faction": "{faction}",
+                                "stat": "wealth",
+                                "value": -10
+                            }
+                        ]
+                    },
+                    "military_campaign": {
+                        "name": "Militärische Kampagne",
+                        "description": "Das Adelshaus startet eine Kampagne, um seinen Einfluss zu erweitern",
+                        "conditions": [
+                            {
+                                "type": "faction",
+                                "faction": "{faction}",
+                                "stat": "military_strength",
+                                "operator": ">=",
+                                "value": 60
+                            },
+                            {
+                                "type": "faction",
+                                "faction": "{faction}",
+                                "stat": "stability",
+                                "operator": ">=",
+                                "value": 50
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "type": "modify_stat",
+                                "faction": "{faction}",
+                                "stat": "power",
+                                "value": 15
+                            },
+                            {
+                                "type": "modify_stat",
+                                "faction": "{faction}",
+                                "stat": "stability",
+                                "value": -5
+                            }
+                        ]
+                    }
                 }
             ),
             
@@ -97,6 +261,95 @@ class FactionTemplates:
                     "trade_income": 85,
                     "market_control": 75,
                     "diplomatic_network": 70
+                },
+                event_templates={
+                    "new_trade_route": {
+                        "name": "Neue Handelsroute",
+                        "description": "Die Handelsgilde eröffnet eine profitable neue Handelsroute",
+                        "conditions": [
+                            {
+                                "type": "faction",
+                                "faction": "{faction}",
+                                "stat": "diplomatic_network",
+                                "operator": ">=",
+                                "value": 65
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "type": "modify_stat",
+                                "faction": "{faction}",
+                                "stat": "trade_income",
+                                "value": 20
+                            },
+                            {
+                                "type": "modify_stat",
+                                "faction": "{faction}",
+                                "stat": "influence",
+                                "value": 10
+                            }
+                        ]
+                    },
+                    "trade_monopoly": {
+                        "name": "Handelsmonopol",
+                        "description": "Die Gilde sichert sich ein Monopol auf wichtige Waren",
+                        "conditions": [
+                            {
+                                "type": "faction",
+                                "faction": "{faction}",
+                                "stat": "market_control",
+                                "operator": ">=",
+                                "value": 70
+                            },
+                            {
+                                "type": "faction",
+                                "faction": "{faction}",
+                                "stat": "influence",
+                                "operator": ">=",
+                                "value": 60
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "type": "modify_stat",
+                                "faction": "{faction}",
+                                "stat": "power",
+                                "value": 10
+                            },
+                            {
+                                "type": "modify_stat",
+                                "faction": "{faction}",
+                                "stat": "market_control",
+                                "value": 15
+                            }
+                        ],
+                        "followup_events": [
+                            {
+                                "id": "monopoly_backlash",
+                                "probability": 0.4,
+                                "delay": 2
+                            }
+                        ]
+                    },
+                    "monopoly_backlash": {
+                        "name": "Widerstand gegen Monopol",
+                        "description": "Andere Händler und die Bevölkerung wenden sich gegen das Monopol",
+                        "is_followup": true,
+                        "effects": [
+                            {
+                                "type": "modify_stat",
+                                "faction": "{faction}",
+                                "stat": "stability",
+                                "value": -15
+                            },
+                            {
+                                "type": "modify_stat",
+                                "faction": "{faction}",
+                                "stat": "influence",
+                                "value": -10
+                            }
+                        ]
+                    }
                 }
             ),
             
