@@ -1,10 +1,15 @@
 from .event_processor import EventProcessor
 from .logger_config import world_logger
+from .faction_templates import FactionTemplates
 import os
+import random
 
 class FantasyWorld:
     def __init__(self):
         self.year = 1000
+        # Initialize the faction templates
+        self.faction_templates = FactionTemplates()
+        
         self.regions = {
             "Northern Mountains": {
                 "magical_energy": 30,
@@ -108,3 +113,100 @@ class FantasyWorld:
                 world_logger.info(f"  {event['name']}")
             
         return triggered_events
+        
+    def generate_faction(self, template_id: str = None, name: str = None):
+        """Generates a single faction based on a template"""
+        if template_id:
+            template = self.faction_templates.get_template(template_id)
+            if not template:
+                world_logger.warning(f"Faction template '{template_id}' not found. Using a random template.")
+                template = self.faction_templates.get_random_template()
+        else:
+            template = self.faction_templates.get_random_template()
+        
+        faction_data = template.generate_faction(name)
+        return faction_data
+    
+    def generate_factions(self, count: int = 6, required_types: list = None):
+        """Generates a list of factions with optional required types"""
+        world_logger.info(f"Generating {count} factions for the world")
+        
+        factions = {}
+        
+        # If specific faction types are required, generate these first
+        if required_types:
+            for template_id in required_types:
+                if len(factions) >= count:
+                    break
+                
+                faction_data = self.generate_faction(template_id)
+                faction_name = self._generate_unique_faction_name(faction_data["type"], list(factions.keys()))
+                factions[faction_name] = faction_data
+                world_logger.info(f"Created required faction: {faction_name} ({faction_data['type']})")
+        
+        # Fill the rest with random factions
+        remaining = count - len(factions)
+        for _ in range(remaining):
+            # Choose a random template
+            template = self.faction_templates.get_random_template()
+            faction_data = template.generate_faction()
+            
+            # Generate a unique name
+            faction_name = self._generate_unique_faction_name(faction_data["type"], list(factions.keys()))
+            factions[faction_name] = faction_data
+            world_logger.info(f"Created random faction: {faction_name} ({faction_data['type']})")
+        
+        return factions
+    
+    def _generate_unique_faction_name(self, faction_type: str, existing_names: list):
+        """Helper method to generate a unique faction name"""
+        base_patterns = [
+            f"The {faction_type} of {self._random_place_name()}",
+            f"{self._random_adjective()} {faction_type}",
+            f"{faction_type} of {self._random_concept()}",
+            f"{faction_type} of the {self._random_concept()}",
+        ]
+        
+        # Try up to 10 times to generate a unique name
+        for _ in range(10):
+            pattern = random.choice(base_patterns)
+            name = pattern
+            if name not in existing_names:
+                return name
+        
+        # If all attempts fail, add a number
+        return f"{random.choice(base_patterns)} {random.randint(1, 999)}"
+    
+    def _random_place_name(self):
+        """Generates a random place name"""
+        places = [
+            "Silver Lake", "Mist Valley", "Iron Rock", "Dark Grove", "Clearing", 
+            "Red Mountain", "Gold Coast", "Green Forest", "Black Water", "White Stone",
+            "Dragon Mountain", "Storm Wind", "Sun Rock", "Moonlight", "Star Valley"
+        ]
+        return random.choice(places)
+    
+    def _random_adjective(self):
+        """Generates a random adjective"""
+        adjectives = [
+            "Mighty", "Venerable", "Secret", "Ancient", "New",
+            "Mystical", "Radiant", "Golden", "Silver", "Honorable",
+            "Dark", "Shining", "Hidden", "Holy", "Royal"
+        ]
+        return random.choice(adjectives)
+    
+    def _random_concept(self):
+        """Generates a random concept"""
+        concepts = [
+            "Dragons", "Sun", "Moon", "Stars", "Magic",
+            "Wisdom", "Power", "Strength", "Honor", "Valor",
+            "Knowledge", "Light", "Shadow", "Fire", "Water",
+            "War", "Peace", "Trade", "Wealth", "Destiny"
+        ]
+        return random.choice(concepts)
+    
+    def initialize_factions(self, count: int = 6, required_types: list = None):
+        """Initializes the factions for the world"""
+        world_logger.info("Initializing factions for the Fantasy World")
+        self.factions = self.generate_factions(count, required_types)
+        world_logger.info(f"{len(self.factions)} factions have been initialized")

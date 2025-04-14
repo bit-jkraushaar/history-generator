@@ -13,6 +13,14 @@ class Simulation:
         self.person_manager = PersonManager()
         self.marriage_market = MarriageMarket(self.person_manager)
         self.fantasy_world = FantasyWorld()
+        
+        # Initialize the factions
+        # You can adjust the desired parameters here
+        self.fantasy_world.initialize_factions(
+            count=6,  # Number of factions
+            required_types=["magic_guild", "noble_house", "merchant_guild", "religious_order"]  # Guaranteed faction types
+        )
+        
         self.fantasy_generator = FantasyEventGenerator(self.fantasy_world)
 
     def create_dynasty(self, name: str):
@@ -21,19 +29,22 @@ class Simulation:
         queen_age = random.randint(20, 40)
         birth_year = self.year - king_age
 
+        # Find a noble house faction for the dynasty
+        noble_house_faction = self._find_noble_house_faction()
+        
         # Create king and queen with appropriate faction and region
         king = Person(
             name=Person.generate_random_name("male"),
             gender="male",
             birth_year=birth_year,
-            faction="Noble Houses",
+            faction=noble_house_faction,
             region="Central Valley"
         )
         queen = Person(
             name=Person.generate_random_name("female"),
             gender="female",
             birth_year=birth_year,
-            faction="Noble Houses",
+            faction=noble_house_faction,
             region="Central Valley"
         )
         
@@ -47,6 +58,29 @@ class Simulation:
         dynasty = Dynasty(name, king, queen)
         print(f"{king.name} is married to {queen.name}")
         self.dynasties.append(dynasty)
+        
+    def _find_noble_house_faction(self):
+        """Find a suitable noble house faction for the dynasty or create one if none exists"""
+        # Check if we have any noble house factions
+        for faction_name, faction_data in self.fantasy_world.factions.items():
+            if faction_data.get("type") == "Noble House":
+                return faction_name
+                
+        # If no noble house faction exists, create one
+        noble_template = self.fantasy_world.faction_templates.get_template("noble_house")
+        faction_data = noble_template.generate_faction()
+        
+        # Generate a unique name for the faction
+        faction_name = self.fantasy_world._generate_unique_faction_name(
+            faction_data["type"], 
+            list(self.fantasy_world.factions.keys())
+        )
+        
+        # Add the faction to the world
+        self.fantasy_world.factions[faction_name] = faction_data
+        print(f"Created noble house faction for dynasty: {faction_name}")
+        
+        return faction_name
 
     def simulate_year(self):
         self.marriage_market.update(self.year)
